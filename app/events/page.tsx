@@ -5,14 +5,14 @@ import { events } from '@/lib/data';
 import { todayISO } from '@/lib/dates';
 
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Events · UGSOTADYPU Hub' };
+export const metadata = { title: 'Events · upGrad DEV CLUB' };
 
 export default function EventsPage() {
   return (
     <main className="container page">
       <PageHero
         tag="Hack · Learn · Win"
-        tagColor={{ bg: '#FFE1EC', fg: '#A3164E' }}
+        tagColor={{ bg: '#DEA043', fg: '#1F1F1F' }}
         before="All the "
         highlight="events"
         sub="Hackathons, workshops and contests, on campus and beyond."

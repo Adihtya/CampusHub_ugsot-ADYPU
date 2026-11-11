@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import type { CampusEvent, EventType } from '@/lib/types';
 import { stickerTilt, typeColors, weekdayStripe } from '@/lib/colors';
 import { MONTHS, MONTHS_SHORT, eventDays, parseDate, sameDay, toISO } from '@/lib/dates';
@@ -106,8 +106,9 @@ export default function Calendar({ events, today, selected = null, onSelect, tal
                 <>
                   <span className="day__num">{num}</span>
                   {dayEvents.slice(0, MAX_CHIPS).map((e, k) => (
-                    <span key={e.id} className="sticker" style={{ background: typeColors[e.type].sticker, transform: `rotate(${stickerTilt[(date.getDate() + k) % 4]})` }}>
-                      {e.title}
+                    <span key={e.id} className="calendar-event" style={{ '--event-color': typeColors[e.type].sticker } as CSSProperties}>
+                      <i aria-hidden="true" />
+                      <span>{e.title}</span>
                     </span>
                   ))}
                   {dayEvents.length > MAX_CHIPS && <span className="day__more">+{dayEvents.length - MAX_CHIPS} more</span>}

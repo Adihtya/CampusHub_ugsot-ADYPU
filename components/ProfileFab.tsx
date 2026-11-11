@@ -36,14 +36,14 @@ export default function ProfileFab() {
       {open && (
         <nav aria-label="Profiles" id="profile-menu" className="fab__menu">
           <Link href="/profile" className="fab__link" aria-current={pathname === '/profile' ? 'page' : undefined}>
-            <span aria-hidden="true" className="fab__icon" style={{ background: 'var(--primary)', color: '#fff' }}>
+            <span aria-hidden="true" className="fab__icon" style={{ background: 'var(--navy)', color: '#fff' }}>
               {me ? initialsOf(me.name) : 'ME'}
             </span>
             Your profile
           </Link>
           <Link href="/students" className="fab__link" aria-current={pathname === '/students' ? 'page' : undefined}>
-            <span aria-hidden="true" className="fab__icon" style={{ background: '#DDF5EA' }}>
-              <Search color="#11694A" />
+            <span aria-hidden="true" className="fab__icon" style={{ background: '#DEA043' }}>
+              <Search color="#1F1F1F" />
             </span>
             Explore profiles
           </Link>

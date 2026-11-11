@@ -21,9 +21,9 @@ export default function ProfileView({ student, isOwn }: { student: Student; isOw
     <div className="profile-layout">
       <section aria-label="Profile card" className="profile-card">
         <div aria-hidden="true" className="profile-card__banner">
-          <span style={{ borderRadius: '50%', background: '#FFD84D' }} />
-          <span style={{ borderRadius: 6, background: '#FF8FB1' }} />
-          <span style={{ borderRadius: '50%', background: '#7ED6B2' }} />
+          <span style={{ borderRadius: 0, background: '#DEA043' }} />
+          <span style={{ borderRadius: 0, background: '#EE2C3C' }} />
+          <span style={{ borderRadius: 0, background: '#FFFFFF' }} />
         </div>
         <div className="profile-card__body">
           <div className="profile-card__intro">
@@ -33,7 +33,7 @@ export default function ProfileView({ student, isOwn }: { student: Student; isOw
               <p className="profile-card__meta">{student.branch} · {student.year} · @{student.handle}</p>
             </div>
             {student.lookingForTeam && (
-              <span className="chip" style={{ background: '#DDF5EA', color: '#11694A', fontSize: 13, padding: '6px 12px' }}>Looking for a team</span>
+              <span className="chip" style={{ background: '#DEA043', color: '#1F1F1F', fontSize: 13, padding: '6px 12px' }}>Looking for a team</span>
             )}
             <p className="profile-card__bio">{student.bio}</p>
           </div>
@@ -45,7 +45,7 @@ export default function ProfileView({ student, isOwn }: { student: Student; isOw
                 const value = student.links[l.key] as string;
                 return (
                   <a key={l.key} href={value.startsWith('http') ? value : `https://${value}`} className="link-row" target="_blank" rel="noreferrer">
-                    <span aria-hidden="true" className="icon-tile" style={{ width: 30, height: 30, borderRadius: 9, background: c.bg }}>
+                    <span aria-hidden="true" className="icon-tile" style={{ width: 30, height: 30, borderRadius: 0, background: c.bg }}>
                       <LinkIcon color={c.fg} />
                     </span>
                     <span className="link-row__label">{l.label}</span>

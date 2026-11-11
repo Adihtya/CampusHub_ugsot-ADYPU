@@ -24,7 +24,7 @@ export function Sparkle({ size = 28, color = 'var(--sparkle)' }: IconProps) {
   );
 }
 
-export function Star({ size = 18, color = '#A3164E' }: IconProps) {
+export function Star({ size = 18, color = '#EE2C3C' }: IconProps) {
   return (
     <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z" /></svg>
   );

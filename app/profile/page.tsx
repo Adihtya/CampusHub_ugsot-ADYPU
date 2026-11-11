@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import ProfileView from '@/components/ProfileView';
 import { CURRENT_USER_ID, getStudent } from '@/lib/data';
 
-export const metadata = { title: 'Your profile · UGSOTADYPU Hub' };
+export const metadata = { title: 'Your profile · upGrad DEV CLUB' };
 
 export default function MyProfilePage() {
   // Replace with the signed-in user once auth is added.

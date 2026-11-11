@@ -1,7 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 const NAV = [
   { href: '/', label: 'Home' },
@@ -12,21 +14,48 @@ const NAV = [
 
 export default function Header() {
   const pathname = usePathname();
-  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <header className="site-header">
       <div className="container site-header__inner">
-        <Link href="/" className="logo">
-          <span aria-hidden="true" className="logo__mark">U</span>
-          <span>UGSOTADYPU <span className="logo__accent">Hub</span></span>
+        <Link href="/" className="logo" onClick={() => setIsOpen(false)}>
+          <Image
+            src="/upgrad-sot-logo.png"
+            alt="upGrad"
+            className="logo__image"
+            width={175}
+            height={56}
+            priority
+          />
+          <span className="logo__club">DEV CLUB</span>
         </Link>
-        <nav aria-label="Main" className="nav">
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-label="Toggle navigation"
+          aria-expanded={isOpen}
+          onClick={() => setIsOpen((value) => !value)}
+        >
+          <span /><span />
+        </button>
+        <nav aria-label="Main" className={`nav ${isOpen ? 'nav--open' : ''}`}>
           {NAV.map((item) => (
-            <Link key={item.href} href={item.href} className="nav__link" aria-current={isActive(item.href) ? 'page' : undefined}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className="nav__link"
+              aria-current={
+                item.href === '/'
+                  ? pathname === '/' ? 'page' : undefined
+                  : pathname === item.href || pathname.startsWith(`${item.href}/`) ? 'page' : undefined
+              }
+              onClick={() => setIsOpen(false)}
+            >
               {item.label}
             </Link>
           ))}
+          <Link href="/students" className="nav__cta" onClick={() => setIsOpen(false)}>Join the club <span>↗</span></Link>
         </nav>
       </div>
     </header>

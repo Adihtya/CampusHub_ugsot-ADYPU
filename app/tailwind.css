@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sot-white: #FFFFFF;
+  --color-sot-navy: #0C0E38;
+  --color-sot-crimson: #EE2C3C;
+  --color-sot-mustard: #DEA043;
+  --color-sot-slate: #1F1F1F;
+  --color-sot-offwhite: #F5F5F5;
+  --font-display: "Bricolage Grotesque", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, monospace;
+  --shadow-hard: 6px 6px 0 #1F1F1F;
+  --shadow-hard-small: 4px 4px 0 #1F1F1F;
+}

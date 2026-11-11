@@ -9,7 +9,7 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: { params: { id: string } }) {
   const s = getStudent(params.id);
-  return { title: s ? `${s.name} · UGSOTADYPU Hub` : 'Student not found' };
+  return { title: s ? `${s.name} · upGrad DEV CLUB` : 'Student not found · upGrad DEV CLUB' };
 }
 
 export default function StudentProfilePage({ params }: { params: { id: string } }) {
