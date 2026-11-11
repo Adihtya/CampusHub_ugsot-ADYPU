@@ -4,7 +4,6 @@ import { Plus } from '@/components/icons';
 import { events } from '@/lib/data';
 import { todayISO } from '@/lib/dates';
 
-export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Events · upGrad DEV CLUB' };
 
 export default function EventsPage() {

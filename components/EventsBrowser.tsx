@@ -1,9 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { CampusEvent } from '@/lib/types';
 import { typeColors } from '@/lib/colors';
-import { formatShort } from '@/lib/dates';
+import { formatShort, todayISO } from '@/lib/dates';
 import Calendar from './Calendar';
 import FilterPills from './FilterPills';
 import EventDateBlock from './EventDateBlock';
@@ -12,10 +12,15 @@ const MODES = ['All', 'Online', 'Offline'] as const;
 const WHERE = ['All', 'In campus', 'Out of campus'] as const;
 const VIEWS = ['List', 'Calendar'] as const;
 
-export default function EventsBrowser({ events, today }: { events: CampusEvent[]; today: string }) {
+export default function EventsBrowser({ events, today: initialToday }: { events: CampusEvent[]; today: string }) {
   const [mode, setMode] = useState<(typeof MODES)[number]>('All');
   const [where, setWhere] = useState<(typeof WHERE)[number]>('All');
   const [view, setView] = useState<(typeof VIEWS)[number]>('List');
+  const [today, setToday] = useState(initialToday);
+
+  useEffect(() => {
+    setToday(todayISO());
+  }, []);
 
   const filtered = useMemo(
     () =>

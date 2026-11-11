@@ -13,7 +13,14 @@ npm run dev
 
 Then open http://localhost:3000.
 
-To make a production build: `npm run build`, then `npm start`.
+To make a production build: `npm run build`. The static site is written to `out/`.
+
+## Deploy to GitHub Pages
+
+The site deploys to GitHub Pages using the workflow in `.github/workflows/deploy.yml`.
+In the repository's **Settings → Pages**, set **Build and deployment → Source** to
+**GitHub Actions**. The workflow runs automatically when changes are pushed to `main`.
+The deployed site is https://adihtya.github.io/CampusHub_ugsot-ADYPU/.
 
 ## What's where
 

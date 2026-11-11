@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { basePath } from '@/lib/site';
 
 const NAV = [
   { href: '/', label: 'Home' },
@@ -21,7 +22,7 @@ export default function Header() {
       <div className="container site-header__inner">
         <Link href="/" className="logo" onClick={() => setIsOpen(false)}>
           <Image
-            src="/upgrad-sot-logo.png"
+            src={`${basePath}/upgrad-sot-logo.png`}
             alt="upGrad"
             className="logo__image"
             width={175}

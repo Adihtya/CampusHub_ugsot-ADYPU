@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Post, PostTag } from '@/lib/types';
 import { tagColors } from '@/lib/colors';
 import { timeAgo } from '@/lib/dates';
@@ -19,6 +19,11 @@ export default function CommunityFeed({ initialPosts, now }: { initialPosts: Pos
   const [draft, setDraft] = useState('');
   const [draftTag, setDraftTag] = useState<PostTag>('Ask');
   const [voted, setVoted] = useState<Record<string, boolean>>({});
+  const [currentTime, setCurrentTime] = useState(now);
+
+  useEffect(() => {
+    setCurrentTime(Date.now());
+  }, []);
 
   const visible = useMemo(() => posts.filter((p) => filter === 'All' || p.tag === filter), [posts, filter]);
 
@@ -84,7 +89,7 @@ export default function CommunityFeed({ initialPosts, now }: { initialPosts: Pos
                   <span className="post__author">
                     <Avatar studentId={author.id} name={author.name} size="sm" />
                     <Link href={author.id === CURRENT_USER_ID ? '/profile' : `/students/${author.id}`}>{author.name}</Link>
-                    · {timeAgo(p.createdAt, p.id.startsWith('local-') ? Date.now() : now)}
+                    · {timeAgo(p.createdAt, p.id.startsWith('local-') ? Date.now() : currentTime)}
                   </span>
                 )}
               </div>

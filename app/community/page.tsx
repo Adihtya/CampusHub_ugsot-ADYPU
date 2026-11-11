@@ -2,7 +2,6 @@ import Link from 'next/link';
 import CommunityFeed from '@/components/CommunityFeed';
 import { posts } from '@/lib/data';
 
-export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Community' };
 
 const cloneCommands = [

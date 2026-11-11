@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { basePath } from '@/lib/site';
 
 const links = [
   { href: '/', label: 'Home' },
@@ -26,7 +27,7 @@ export default function Navbar() {
         >
           <span className="grid h-10 shrink-0 place-items-center border-2 border-sot-slate bg-sot-white px-1 shadow-hard-small">
             <Image
-              src="/upgrad-sot-logo.png"
+              src={`${basePath}/upgrad-sot-logo.png`}
               alt="upGrad"
               width={100}
               height={32}
