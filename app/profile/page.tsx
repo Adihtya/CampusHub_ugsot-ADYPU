@@ -5,6 +5,7 @@ import Card from '@/components/ui/Card';
 import { getCurrentUser } from '@/lib/auth';
 import { students } from '@/lib/data';
 import type { Student } from '@/lib/types';
+import { getMyEventRegistrations, type MyEventRegistration } from '@/lib/db/events';
 
 export const metadata = { title: 'Your profile · CampusHub · UGSOT' };
 
@@ -23,7 +24,7 @@ export default async function MyProfilePage() {
         <Card className="card" style={{ maxWidth: 540, padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
           <h2 className="card__title">Sign in or create an account</h2>
           <p style={{ fontSize: 15, lineHeight: 1.5 }}>
-            You are browsing CampusHub as a guest. To build your profile, showcase skills, find teammates, and post in the community, sign in with your college account.
+            You are browsing CampusHub as a guest. To build your profile, showcase skills, find teammates, and post in the community, sign in with your email address.
           </p>
           <div className="btn-row" style={{ marginTop: 8 }}>
             <Link href="/auth/sign-in" className="btn btn--primary">Sign in</Link>
@@ -56,6 +57,15 @@ export default async function MyProfilePage() {
     profileCompleteness: 80,
   };
 
+  let registrations: MyEventRegistration[] = [];
+  let registrationsError = '';
+  try {
+    registrations = await getMyEventRegistrations();
+  } catch (error) {
+    console.error('Unable to load the profile event registrations.', error);
+    registrationsError = 'Your registrations are temporarily unavailable.';
+  }
+
   return (
     <main className="container page profile-page">
       <div className="profile-page__heading">
@@ -64,7 +74,8 @@ export default async function MyProfilePage() {
         <p className="profile-page__note">Give classmates a quick sense of what you’re learning and building.</p>
         <SignOutButton />
       </div>
-      <ProfileView student={profileData} isOwn />
+      <ProfileView student={profileData} isOwn registrations={registrations}
+        registrationsError={registrationsError} />
     </main>
   );
 }

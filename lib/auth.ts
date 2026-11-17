@@ -1,46 +1,78 @@
-// DEMO ONLY: replaced by Supabase auth in Phase 5. Not secure.
-import { cookies } from 'next/headers';
+import { createSupabaseServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
 
-const COOKIE_NAME = 'campushub-demo-user';
+export type CurrentUser = {
+  id: string;
+  name: string;
+  email: string;
+  role: 'student' | 'organizer';
+};
 
-export type CurrentUser = { name: string; email: string };
+export class AuthServiceError extends Error {
+  constructor(message: string, readonly status: number) {
+    super(message);
+    this.name = 'AuthServiceError';
+  }
+}
 
-async function saveUser(name: string, email: string) {
-  const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, encodeURIComponent(JSON.stringify({ name, email })), {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/',
+export async function signIn(email: string, password: string) {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.trim().toLowerCase(),
+    password,
   });
+  if (error) {
+    throw new AuthServiceError('Email or password is incorrect. Please try again.', 400);
+  }
 }
 
-export async function signIn(email: string) {
-  const displayName = email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
-  await saveUser(displayName, email.trim().toLowerCase());
-}
-
-export async function signUp(name: string, email: string) {
-  await saveUser(name.trim(), email.trim().toLowerCase());
+export async function signUp(name: string, email: string, password: string, courseYear: string) {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.signUp({
+    email: email.trim().toLowerCase(),
+    password,
+    options: {
+      data: { full_name: name.trim(), course_year: courseYear },
+    },
+  });
+  if (error) {
+    const alreadyRegistered = /already (?:been )?registered|already exists/i.test(error.message);
+    throw new AuthServiceError(
+      alreadyRegistered ? 'An account with this email already exists. Try signing in.' : 'We couldn’t create your account. Check your details and try again.',
+      400,
+    );
+  }
+  return { confirmationRequired: data.session === null };
 }
 
 export async function signOut() {
-  const cookieStore = await cookies();
-  cookieStore.delete(COOKIE_NAME);
+  if (!isSupabaseConfigured()) return;
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new AuthServiceError('We couldn’t sign you out. Please try again.', 500);
 }
 
 export async function getCurrentUser(): Promise<CurrentUser | null> {
-  const value = (await cookies()).get(COOKIE_NAME)?.value;
-  if (!value) return null;
-  try {
-    const user: unknown = JSON.parse(decodeURIComponent(value));
-    if (
-      typeof user === 'object' && user !== null
-      && 'name' in user && typeof user.name === 'string'
-      && 'email' in user && typeof user.email === 'string'
-    ) return { name: user.name, email: user.email };
-  } catch (error) {
-    console.error('Unable to read the demo auth session cookie.', error);
+  if (!isSupabaseConfigured()) return null;
+  const supabase = await createSupabaseServerClient();
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError) {
+    if (authError.status === 401 || authError.name === 'AuthSessionMissingError') return null;
+    throw new Error(`Unable to verify the signed-in user: ${authError.message}`);
   }
-  return null;
+  if (!authData.user?.email) return null;
+
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .select('full_name, role')
+    .eq('id', authData.user.id)
+    .maybeSingle();
+  if (error) throw new Error(`Unable to load the signed-in profile: ${error.message}`);
+
+  const name = profile?.full_name || authData.user.user_metadata.full_name;
+  return {
+    id: authData.user.id,
+    name: typeof name === 'string' && name.trim() ? name : authData.user.email.split('@')[0],
+    email: authData.user.email,
+    role: profile?.role ?? 'student',
+  };
 }

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
 import type { Student } from '@/lib/types';
+import type { MyEventRegistration } from '@/lib/db/events';
 import { typeColors } from '@/lib/colors';
 import { dayRange, MONTHS_SHORT, parseDate } from '@/lib/dates';
 import { getEvent } from '@/lib/data';
@@ -20,7 +21,19 @@ const LINK_LABELS: { key: keyof Student['links']; label: string }[] = [
   { key: 'portfolio', label: 'Portfolio' },
 ];
 
-export default function ProfileView({ student, isOwn }: { student: Student; isOwn: boolean }) {
+type Props = {
+  student: Student;
+  isOwn: boolean;
+  registrations?: MyEventRegistration[];
+  registrationsError?: string;
+};
+
+export default function ProfileView({
+  student,
+  isOwn,
+  registrations = [],
+  registrationsError = '',
+}: Props) {
   const [profile, setProfile] = useState(student);
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(student.name);
@@ -29,6 +42,10 @@ export default function ProfileView({ student, isOwn }: { student: Student; isOw
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(false);
   const going = profile.going.map(getEvent).filter((event) => event !== undefined);
+  const registeredEvents = registrations.flatMap((registration) => {
+    const event = getEvent(registration.eventId);
+    return event ? [{ registration, event }] : [];
+  });
   const links = LINK_LABELS.flatMap((link) => {
     const value = profile.links[link.key];
     return value && !value.includes('[') ? [{ ...link, value }] : [];
@@ -155,19 +172,39 @@ export default function ProfileView({ student, isOwn }: { student: Student; isOw
           )) : <p className="empty-note">No achievements added yet. Your next win starts here.</p>}
         </Card>
 
-        <Card aria-labelledby="going-title" className="profile-section">
-          <h2 id="going-title" className="card__title">Going to</h2>
-          {going.length ? (
-            <div className="going-list">
-              {going.map((event) => (
-                <Link key={event.id} href="/events" className="going-row" style={{ background: typeColors[event.type].bg }}>
-                  <span>{event.title}</span>
-                  <span>{MONTHS_SHORT[parseDate(event.start).getMonth()]} {dayRange(event)}</span>
-                </Link>
-              ))}
-            </div>
-          ) : <p className="empty-note">No events saved yet. Browse events and find one to join.</p>}
-        </Card>
+        {isOwn ? (
+          <Card aria-labelledby="registrations-title" className="profile-section">
+            <h2 id="registrations-title" className="card__title">My registrations</h2>
+            {registrationsError && <p className="form-error" role="alert">{registrationsError}</p>}
+            {registeredEvents.length ? (
+              <div className="going-list">
+                {registeredEvents.map(({ registration, event }) => (
+                  <Link key={registration.id} href="/events" className="going-row"
+                    style={{ background: typeColors[event.category].bg }}>
+                    <span>{event.title}</span>
+                    <span>{MONTHS_SHORT[parseDate(event.start).getMonth()]} {dayRange(event)}</span>
+                  </Link>
+                ))}
+              </div>
+            ) : !registrationsError ? (
+              <p className="empty-note">You haven’t registered for any events yet. Browse events to find one to join.</p>
+            ) : null}
+          </Card>
+        ) : (
+          <Card aria-labelledby="going-title" className="profile-section">
+            <h2 id="going-title" className="card__title">Going to</h2>
+            {going.length ? (
+              <div className="going-list">
+                {going.map((event) => (
+                  <Link key={event.id} href="/events" className="going-row" style={{ background: typeColors[event.category].bg }}>
+                    <span>{event.title}</span>
+                    <span>{MONTHS_SHORT[parseDate(event.start).getMonth()]} {dayRange(event)}</span>
+                  </Link>
+                ))}
+              </div>
+            ) : <p className="empty-note">No events saved yet. Browse events and find one to join.</p>}
+          </Card>
+        )}
       </div>
     </div>
   );

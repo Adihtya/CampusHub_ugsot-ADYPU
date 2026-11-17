@@ -1,11 +1,13 @@
-export type EventType = 'Hackathon' | 'Workshop' | 'Contest' | 'Meetup' | 'Sprint' | 'Design jam';
+export type EventType = 'event' | 'hackathon';
+export type EventCategory = 'Hackathon' | 'Workshop' | 'Contest' | 'Meetup' | 'Sprint' | 'Design jam';
 export type EventMode = 'Online' | 'Offline';
 export type EventWhere = 'In campus' | 'Out of campus';
 
-export interface CampusEvent {
+interface CampusEventBase {
   id: string;
   title: string;
   type: EventType;
+  category: EventCategory;
   mode: EventMode;
   where: EventWhere;
   place: string;
@@ -14,9 +16,22 @@ export interface CampusEvent {
   /** YYYY-MM-DD, for multi-day events */
   end?: string;
   /** YYYY-MM-DD, last day to register */
-  deadline: string;
+  registrationDeadline: string;
+  capacity: number;
   registerUrl: string;
 }
+
+export type CampusEvent = CampusEventBase & (
+  | { type: 'event' }
+  | {
+      type: 'hackathon';
+      teamSizeMin: number;
+      teamSizeMax: number;
+      theme: string;
+      prize: string;
+      rules: string[];
+    }
+);
 
 export interface Achievement {
   title: string;
