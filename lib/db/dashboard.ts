@@ -1,6 +1,7 @@
 import 'server-only';
 import { createSupabaseServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth';
+import { getUserLeaderboardPosition } from '@/lib/db/leaderboard';
 
 export type ActivityMonth = {
   month: string; // e.g. 'Nov 2026'
@@ -15,6 +16,9 @@ export type DashboardStats = {
   acceptedAnswersCount: number;
   completedMentorshipCount: number;
   streakDays: number;
+  leaderboardRank?: number | null;
+  leaderboardPoints?: number | null;
+  badges?: string[];
   monthlyActivity: ActivityMonth[];
   githubData: {
     username: string | null;
@@ -262,6 +266,22 @@ export async function getUserDashboardData(
     // Compute streak
     const streakDays = Math.min(30, Math.max(1, (eventsAttendedCount ?? 0) * 2 + (projectsCount ?? 0) * 3));
 
+    // Fetch leaderboard rank and badges
+    let leaderboardRank: number | null = null;
+    let leaderboardPoints: number | null = null;
+    let badges: string[] = [];
+
+    try {
+      const position = await getUserLeaderboardPosition(userId, 'all', 'overall');
+      if (position) {
+        leaderboardRank = position.rank;
+        leaderboardPoints = position.totalPoints;
+        badges = position.badges;
+      }
+    } catch {
+      // Graceful fallback if leaderboard RPC is unconfigured
+    }
+
     return {
       projectsCount: projectsCount ?? 0,
       eventsRegisteredCount: eventsRegisteredCount ?? 0,
@@ -270,6 +290,9 @@ export async function getUserDashboardData(
       acceptedAnswersCount: acceptedAnswersCount ?? 0,
       completedMentorshipCount,
       streakDays,
+      leaderboardRank,
+      leaderboardPoints,
+      badges,
       monthlyActivity: dynamicMonths,
       githubData,
     };

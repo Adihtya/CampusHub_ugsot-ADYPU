@@ -3,6 +3,7 @@ export const topNavigationItems = [
   { href: '/events', label: 'Events' },
   { href: '/projects', label: 'Projects' },
   { href: '/community', label: 'Forum' },
+  { href: '/leaderboard', label: 'Leaderboard' },
   { href: '/mentorship', label: 'Mentorship' },
   { href: '/opportunities', label: 'Opportunities' },
   { href: '/students', label: 'Students' },
@@ -16,6 +17,7 @@ export const mobilePrimaryItems = [
 ] as const;
 
 export const mobileMoreItems = [
+  { href: '/leaderboard', label: 'Leaderboard' },
   { href: '/mentorship', label: 'Mentorship' },
   { href: '/opportunities', label: 'Opportunities' },
   { href: '/students', label: 'Students' },

@@ -264,3 +264,33 @@ export interface Opportunity {
   isClosingSoon?: boolean;
   createdAt: string;
 }
+
+export type LeaderboardTimeFilter = 'all' | 'month' | 'week';
+export type LeaderboardCategoryFilter = 'overall' | 'events' | 'projects' | 'forum' | 'mentorship';
+
+export interface LeaderboardEntry {
+  userId: string;
+  name: string;
+  email: string;
+  courseYear: string | null;
+  githubUsername: string | null;
+  eventsPoints: number;
+  projectsPoints: number;
+  forumPoints: number;
+  mentorshipPoints: number;
+  totalPoints: number;
+  score: number;
+  rank: number;
+  badges: string[];
+  firstActivityAt: string;
+}
+
+export interface UserLeaderboardPosition {
+  userId: string;
+  rank: number;
+  score: number;
+  totalPoints: number;
+  pointsToNextRank: number;
+  nextRankScore: number;
+  badges: string[];
+}

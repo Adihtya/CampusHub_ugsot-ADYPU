@@ -15,6 +15,15 @@ type Props = {
   onSaveGitHub: (username: string) => Promise<void>;
 };
 
+const BADGE_CONFIG: Record<string, { icon: string; bg: string; desc: string }> = {
+  'First Event': { icon: '🌱', bg: '#E0F2FE', desc: 'Registered or attended your first campus event' },
+  'Hackathon Hero': { icon: '🚀', bg: '#FEE2E2', desc: 'Joined or created 3+ hackathon teams' },
+  'Problem Solver': { icon: '💡', bg: '#FEF08A', desc: '5+ accepted forum answers helping peers' },
+  'Builder': { icon: '🛠️', bg: '#E9D5FF', desc: 'Published 3+ student projects to the showcase' },
+  'Mentor': { icon: '🎓', bg: '#DCFCE7', desc: 'Completed 5+ 1:1 mentorship or review sessions' },
+  'Top 10 This Month': { icon: '🏆', bg: '#FFE14D', desc: 'Ranked in the top 10 on the campus leaderboard' },
+};
+
 export default function DashboardTab({
   stats,
   student,
@@ -101,6 +110,30 @@ export default function DashboardTab({
           gap: 14,
         }}
       >
+        {/* Leaderboard Rank & Points */}
+        <div
+          style={{
+            border: '2px solid #1a1a1a',
+            borderRadius: 4,
+            padding: 16,
+            backgroundColor: '#FFE14D',
+            color: '#1a1a1a',
+            boxShadow: '3px 3px 0 #1a1a1a',
+            position: 'relative',
+          }}
+        >
+          <div style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase' }}>🏆 Leaderboard</div>
+          <div style={{ fontSize: 32, fontWeight: 900, margin: '6px 0 2px 0' }}>
+            {stats.leaderboardRank ? `#${stats.leaderboardRank}` : 'Unranked'}
+          </div>
+          <div style={{ fontSize: 12, fontWeight: 600 }}>
+            {stats.leaderboardPoints ?? 0} pts earned ·{' '}
+            <a href="/leaderboard" style={{ textDecoration: 'underline', color: 'inherit' }}>
+              View Board →
+            </a>
+          </div>
+        </div>
+
         {/* Streak Counter */}
         <div
           style={{
@@ -199,6 +232,72 @@ export default function DashboardTab({
           <div style={{ fontSize: 32, fontWeight: 900, margin: '6px 0 2px 0' }}>{stats.completedMentorshipCount}</div>
           <div style={{ fontSize: 12 }}>1:1 sessions completed</div>
         </div>
+      </div>
+
+      {/* Badges Earned Section */}
+      <div
+        style={{
+          border: '2px solid #1a1a1a',
+          borderRadius: 4,
+          padding: 20,
+          backgroundColor: '#fff',
+          boxShadow: '3px 3px 0 #1a1a1a',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: 16, fontWeight: 800 }}>🎖️ Activity Badges Earned</h3>
+            <p style={{ margin: '2px 0 0 0', fontSize: 13, color: '#555' }}>
+              Badges unlocked automatically from your verified campus activity.
+            </p>
+          </div>
+          <span style={{ fontSize: 13, fontWeight: 700, backgroundColor: '#f1f5f9', padding: '4px 10px', borderRadius: 4, border: '1px solid #1a1a1a' }}>
+            {stats.badges?.length || 0} Unlocked
+          </span>
+        </div>
+
+        {stats.badges && stats.badges.length > 0 ? (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
+            {stats.badges.map((badgeName) => {
+              const info = BADGE_CONFIG[badgeName] || { icon: '⭐', bg: '#fef08a', desc: 'Active contributor' };
+              return (
+                <div
+                  key={badgeName}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                    padding: '10px 14px',
+                    borderRadius: 4,
+                    border: '2px solid #1a1a1a',
+                    backgroundColor: info.bg,
+                    boxShadow: '2px 2px 0 #1a1a1a',
+                  }}
+                >
+                  <span style={{ fontSize: 22 }}>{info.icon}</span>
+                  <div>
+                    <div style={{ fontWeight: 800, fontSize: 14 }}>{badgeName}</div>
+                    <div style={{ fontSize: 11, color: '#333', lineHeight: 1.3 }}>{info.desc}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div
+            style={{
+              padding: 16,
+              backgroundColor: '#fafafa',
+              border: '1px dashed #bbb',
+              borderRadius: 4,
+              fontSize: 13,
+              color: '#666',
+              textAlign: 'center',
+            }}
+          >
+            No badges unlocked yet. Register for an event, publish a project, or answer questions in the forum to earn your first badge!
+          </div>
+        )}
       </div>
 
       {/* Monthly Activity SVG Chart */}

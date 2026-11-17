@@ -274,6 +274,35 @@ export default function ProfileView({
               ) : <p className="empty-note">Add a few skills so teammates can find you.</p>}
             </Card>
 
+            {dashboardStats?.badges && dashboardStats.badges.length > 0 && (
+              <Card aria-labelledby="badges-title" className="profile-section">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h2 id="badges-title" className="card__title">Activity Badges ({dashboardStats.badges.length})</h2>
+                  <Link href="/leaderboard" style={{ fontSize: 13, textDecoration: 'underline' }}>
+                    View Leaderboard →
+                  </Link>
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 12 }}>
+                  {dashboardStats.badges.map((b) => (
+                    <span
+                      key={b}
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 800,
+                        padding: '4px 10px',
+                        borderRadius: 4,
+                        border: '1.5px solid #111',
+                        backgroundColor: '#FFE14D',
+                        boxShadow: '1.5px 1.5px 0 #111',
+                      }}
+                    >
+                      🎖️ {b}
+                    </span>
+                  ))}
+                </div>
+              </Card>
+            )}
+
             <Card aria-labelledby="ach-title" className="profile-section">
               <h2 id="ach-title" className="card__title">Achievements</h2>
               {profile.achievements.length ? profile.achievements.map((achievement) => (

@@ -39,6 +39,7 @@ export type Database = {
           github_username: string | null;
           skills: string[] | null;
           bio: string | null;
+          is_hidden_from_leaderboard: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -51,6 +52,7 @@ export type Database = {
           github_username?: string | null;
           skills?: string[] | null;
           bio?: string | null;
+          is_hidden_from_leaderboard?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -430,6 +432,22 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['opportunity_bookmarks']['Insert']>;
         Relationships: [];
       };
+      point_rules: {
+        Row: {
+          action_key: string;
+          points: number;
+          category: 'events' | 'projects' | 'forum' | 'mentorship';
+          description: string;
+        };
+        Insert: {
+          action_key: string;
+          points: number;
+          category: 'events' | 'projects' | 'forum' | 'mentorship';
+          description: string;
+        };
+        Update: Partial<Database['public']['Tables']['point_rules']['Insert']>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -475,6 +493,46 @@ export type Database = {
       issue_event_certificate: {
         Args: { p_event_id: string; p_user_id: string };
         Returns: string;
+      };
+      get_leaderboard: {
+        Args: {
+          p_time_filter?: string;
+          p_category_filter?: string;
+          p_limit?: number;
+          p_offset?: number;
+        };
+        Returns: {
+          user_id: string;
+          full_name: string;
+          email: string;
+          course_year: string | null;
+          github_username: string | null;
+          events_points: number;
+          projects_points: number;
+          forum_points: number;
+          mentorship_points: number;
+          total_points: number;
+          score: number;
+          rank: number;
+          badges: string[];
+          first_activity_at: string;
+        }[];
+      };
+      get_user_leaderboard_position: {
+        Args: {
+          p_user_id: string;
+          p_time_filter?: string;
+          p_category_filter?: string;
+        };
+        Returns: {
+          user_id: string;
+          rank: number;
+          score: number;
+          total_points: number;
+          points_to_next_rank: number;
+          next_rank_score: number;
+          badges: string[];
+        }[];
       };
     };
     Enums: Record<string, never>;
