@@ -216,6 +216,82 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['forum_reports']['Insert']>;
         Relationships: [];
       };
+      projects: {
+        Row: {
+          id: string;
+          title: string;
+          short_description: string;
+          description: string;
+          tech_stack: string[];
+          github_url: string | null;
+          demo_url: string | null;
+          image_url: string | null;
+          looking_for_collaborators: boolean;
+          roles_needed: string[];
+          owner_id: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          short_description: string;
+          description: string;
+          tech_stack?: string[];
+          github_url?: string | null;
+          demo_url?: string | null;
+          image_url?: string | null;
+          looking_for_collaborators?: boolean;
+          roles_needed?: string[];
+          owner_id: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['projects']['Insert']>;
+        Relationships: [];
+      };
+      project_likes: {
+        Row: { user_id: string; project_id: string; created_at: string };
+        Insert: { user_id: string; project_id: string; created_at?: string };
+        Update: Partial<Database['public']['Tables']['project_likes']['Insert']>;
+        Relationships: [];
+      };
+      project_bookmarks: {
+        Row: { user_id: string; project_id: string; created_at: string };
+        Insert: { user_id: string; project_id: string; created_at?: string };
+        Update: Partial<Database['public']['Tables']['project_bookmarks']['Insert']>;
+        Relationships: [];
+      };
+      project_comments: {
+        Row: { id: string; project_id: string; user_id: string; content: string; created_at: string };
+        Insert: { id?: string; project_id: string; user_id: string; content: string; created_at?: string };
+        Update: Partial<Database['public']['Tables']['project_comments']['Insert']>;
+        Relationships: [];
+      };
+      project_collaborations: {
+        Row: {
+          id: string;
+          project_id: string;
+          sender_id: string;
+          message: string;
+          role_interested: string;
+          status: 'pending' | 'accepted' | 'declined';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          project_id: string;
+          sender_id: string;
+          message: string;
+          role_interested?: string;
+          status?: 'pending' | 'accepted' | 'declined';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['project_collaborations']['Insert']>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

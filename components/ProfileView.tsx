@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
-import type { Student } from '@/lib/types';
+import type { Project, Student } from '@/lib/types';
 import type { MyEventRegistration, UserCertificate } from '@/lib/db/events';
 import { typeColors } from '@/lib/colors';
 import { dayRange, MONTHS_SHORT, parseDate } from '@/lib/dates';
@@ -27,6 +27,7 @@ type Props = {
   registrations?: MyEventRegistration[];
   registrationsError?: string;
   certificates?: UserCertificate[];
+  bookmarkedProjects?: Project[];
 };
 
 export default function ProfileView({
@@ -35,6 +36,7 @@ export default function ProfileView({
   registrations = [],
   registrationsError = '',
   certificates = [],
+  bookmarkedProjects = [],
 }: Props) {
   const [profile, setProfile] = useState(student);
   const [editing, setEditing] = useState(false);
@@ -217,6 +219,49 @@ export default function ProfileView({
             ) : (
               <p className="empty-note">
                 No certificates earned yet. Attend events and get marked present by the organizer to receive your official certificate!
+              </p>
+            )}
+          </Card>
+        )}
+
+        {isOwn && (
+          <Card aria-labelledby="bookmarks-title" className="profile-section">
+            <h2 id="bookmarks-title" className="card__title">My bookmarks ({bookmarkedProjects.length})</h2>
+            {bookmarkedProjects.length ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 12 }}>
+                {bookmarkedProjects.map((proj) => (
+                  <div
+                    key={proj.id}
+                    className="going-row"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      background: '#f0fdf4',
+                      border: '2px solid var(--ink)',
+                      borderRadius: 'var(--radius)',
+                      padding: '10px 14px',
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 15 }}>🔖 {proj.title}</div>
+                      <div style={{ fontSize: 12, opacity: 0.75 }}>
+                        {proj.shortDescription.slice(0, 60)}…
+                      </div>
+                    </div>
+                    <Link
+                      href={`/projects/${proj.id}`}
+                      className="btn btn--primary"
+                      style={{ fontSize: 12, padding: '4px 10px', minHeight: 32 }}
+                    >
+                      View Project
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="empty-note">
+                No bookmarked projects yet. Bookmark interesting projects in the Project Showcase to view them here.
               </p>
             )}
           </Card>

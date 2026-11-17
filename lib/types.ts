@@ -116,6 +116,60 @@ export type ForumAnswer = {
   canAccept: boolean;
 };
 
+export type Project = {
+  id: string;
+  title: string;
+  shortDescription: string;
+  description: string;
+  techStack: string[];
+  githubUrl: string | null;
+  demoUrl: string | null;
+  imageUrl: string | null;
+  lookingForCollaborators: boolean;
+  rolesNeeded: string[];
+  ownerId: string;
+  ownerName: string;
+  ownerEmail: string;
+  createdAt: string;
+  updatedAt: string;
+  likesCount: number;
+  commentsCount: number;
+  hasLiked: boolean;
+  hasBookmarked: boolean;
+  canEdit: boolean;
+};
+
+export type ProjectComment = {
+  id: string;
+  projectId: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  content: string;
+  createdAt: string;
+  canDelete: boolean;
+};
+
+export type CollaborationRequest = {
+  id: string;
+  projectId: string;
+  projectTitle: string;
+  senderId: string;
+  senderName: string;
+  senderEmail: string;
+  message: string;
+  roleInterested: string;
+  status: 'pending' | 'accepted' | 'declined';
+  createdAt: string;
+};
+
+export type GitHubRepoStats = {
+  stars: number;
+  forks: number;
+  language: string;
+  updatedAt: string;
+};
+
 export interface Post {
   id: string;
   tag: PostTag;
