@@ -6,10 +6,21 @@ export default function ForgotPasswordPage() {
   return (
     <div className="auth-content">
       <div className="auth-heading">
-        <h1 className="auth-heading__title">Forgot password?</h1>
-        <p>Password recovery will be available when CampusHub connects to its real sign-in service.</p>
+        <h1 className="auth-heading__title">Reset your password</h1>
+        <p>Enter your ADYPU college email address and we’ll help you regain access to your account.</p>
       </div>
-      <Link href="/auth/sign-in" className="btn btn--primary auth-form__submit">Back to sign in</Link>
+      <form className="auth-form" onSubmit={(e) => e.preventDefault()} style={{ gap: 16 }}>
+        <div className="field">
+          <label className="field__label" htmlFor="reset-email">College email</label>
+          <input id="reset-email" type="email" className="input" placeholder="you@adypu.edu.in" required />
+        </div>
+        <button type="submit" className="btn btn--primary auth-form__submit">
+          Send reset instructions
+        </button>
+      </form>
+      <div className="auth-links">
+        <Link href="/auth/sign-in" className="auth-guest">← Back to sign in</Link>
+      </div>
     </div>
   );
 }

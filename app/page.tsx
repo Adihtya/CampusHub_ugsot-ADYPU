@@ -37,7 +37,7 @@ export default async function HomePage() {
       <header className="home-welcome">
         <div>
           <Tag>{formatWeekday(today)}</Tag>
-          <h1 className="hero__title">Hey {firstName}, ready to <span className="hero__highlight">make</span> today?</h1>
+          <h1 className="hero__title">Hey {firstName}, ready to <span className="hero__highlight">build</span> today?</h1>
           <p className="hero__sub">Your people, events and campus conversations, all in one place.</p>
         </div>
         <Link href="/events" className="btn btn--primary">Explore events</Link>

@@ -101,7 +101,7 @@ export default function ProfileView({ student, isOwn }: { student: Student; isOw
                     <textarea id="profile-bio" className="textarea" value={bio} onChange={(event) => setBio(event.target.value)} required maxLength={240} rows={3} />
                   </label>
                   <Input id="profile-skills" label="Skills (separate with commas)" value={skills} onChange={(event) => setSkills(event.target.value)} required maxLength={200} />
-                  <p className="profile-edit__note">Demo only: edits stay on this page and reset when you reload.</p>
+                  <p className="profile-edit__note">Update your public student details below.</p>
                   {error && <p className="form-error" role="alert">{error}</p>}
                   <div className="btn-row">
                     <Button type="submit">Save changes</Button>
@@ -111,7 +111,7 @@ export default function ProfileView({ student, isOwn }: { student: Student; isOw
               ) : (
                 <>
                   <Button type="button" onClick={() => { setSaved(false); setEditing(true); }}>Edit profile</Button>
-                  {saved && <p className="form-success" role="status">Your demo profile has been updated.</p>}
+                  {saved && <p className="form-success" role="status">Your profile has been updated.</p>}
                 </>
               )}
             </>

@@ -13,7 +13,7 @@ export default function NavBar() {
       <div className="container site-header__inner">
         <Link href="/intro" className="logo" aria-label="Open Source Club intro">
           <span aria-hidden="true" className="logo__mark">U</span>
-          <span>UGSOTADYPU <span className="logo__accent">Hub</span></span>
+          <span>UGSOT · ADYPU <span className="logo__accent">Hub</span></span>
         </Link>
         <nav aria-label="Main" className="nav">
           {navigationItems.map((item) => (

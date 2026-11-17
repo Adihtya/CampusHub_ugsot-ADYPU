@@ -1,17 +1,60 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 import ProfileView from '@/components/ProfileView';
 import SignOutButton from '@/components/auth/SignOutButton';
+import Card from '@/components/ui/Card';
 import { getCurrentUser } from '@/lib/auth';
-import { CURRENT_USER_ID, getStudent } from '@/lib/data';
+import { students } from '@/lib/data';
+import type { Student } from '@/lib/types';
 
 export const metadata = { title: 'Your profile · CampusHub · UGSOT' };
 
 export default async function MyProfilePage() {
-  // Profile details remain demo data until Supabase profiles are added in Phase 5.
-  const me = getStudent(CURRENT_USER_ID);
   const currentUser = await getCurrentUser();
-  if (!me) notFound();
+
+  if (!currentUser) {
+    return (
+      <main className="container page profile-page">
+        <div className="profile-page__heading">
+          <Link href="/students" className="back-link">← All students</Link>
+          <p className="eyebrow">Your CampusHub profile</p>
+          <h1 className="hero__title">Profile access</h1>
+          <p className="profile-page__note">Sign in or create an account to view and customize your student profile.</p>
+        </div>
+        <Card className="card" style={{ maxWidth: 540, padding: '28px 24px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <h2 className="card__title">Sign in or create an account</h2>
+          <p style={{ fontSize: 15, lineHeight: 1.5 }}>
+            You are browsing CampusHub as a guest. To build your profile, showcase skills, find teammates, and post in the community, sign in with your college account.
+          </p>
+          <div className="btn-row" style={{ marginTop: 8 }}>
+            <Link href="/auth/sign-in" className="btn btn--primary">Sign in</Link>
+            <Link href="/auth/register" className="btn btn--outline">Create an account</Link>
+          </div>
+        </Card>
+      </main>
+    );
+  }
+
+  const handle = currentUser.email.split('@')[0];
+  const matchedStudent = students.find(
+    (s) => s.handle.toLowerCase() === handle.toLowerCase() || s.name.toLowerCase() === currentUser.name.toLowerCase()
+  );
+
+  const profileData: Student = matchedStudent ?? {
+    id: handle,
+    name: currentUser.name,
+    handle,
+    branch: 'CSE',
+    year: '3rd year',
+    bio: 'Student at UGSOT ADYPU learning, building, and contributing in the open.',
+    skills: ['React', 'TypeScript', 'Git', 'Open Source'],
+    lookingForTeam: true,
+    links: { linkedin: '', github: '', x: '', portfolio: '' },
+    achievements: [
+      { title: 'Joined CampusHub', date: 'Nov 2026', verified: true }
+    ],
+    going: ['campus-hackathon'],
+    profileCompleteness: 80,
+  };
 
   return (
     <main className="container page profile-page">
@@ -19,9 +62,9 @@ export default async function MyProfilePage() {
         <Link href="/students" className="back-link">← All students</Link>
         <p className="eyebrow">Your CampusHub profile</p>
         <p className="profile-page__note">Give classmates a quick sense of what you’re learning and building.</p>
-        {currentUser && <SignOutButton />}
+        <SignOutButton />
       </div>
-      <ProfileView student={me} isOwn />
+      <ProfileView student={profileData} isOwn />
     </main>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import type { CurrentUser } from '@/lib/auth';
 import type { Post, PostTag } from '@/lib/types';
 import { tagColors } from '@/lib/colors';
 import { timeAgo } from '@/lib/dates';
@@ -16,7 +17,15 @@ import Tag from './ui/Tag';
 const TAGS: PostTag[] = ['Need help', 'Ask', 'Find teammate', 'Showcase'];
 const FILTERS = ['All', ...TAGS] as const;
 
-export default function CommunityFeed({ initialPosts, now: initialNow }: { initialPosts: Post[]; now: number }) {
+export default function CommunityFeed({
+  initialPosts,
+  now: initialNow,
+  currentUser,
+}: {
+  initialPosts: Post[];
+  now: number;
+  currentUser: CurrentUser | null;
+}) {
   const [posts, setPosts] = useState(initialPosts);
   const [now, setNow] = useState(initialNow);
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>('All');
@@ -28,13 +37,14 @@ export default function CommunityFeed({ initialPosts, now: initialNow }: { initi
 
   const submit = () => {
     const text = draft.trim();
-    if (!text) return;
+    if (!text || !currentUser) return;
     const createdAt = new Date().toISOString();
     const long = text.length > 80;
+    const authorId = currentUser.email.split('@')[0];
     const post: Post = {
       id: `local-${Date.now()}`,
       tag: draftTag,
-      authorId: CURRENT_USER_ID,
+      authorId,
       createdAt,
       title: long ? `${text.slice(0, 80)}…` : text,
       body: long ? text : '',
@@ -49,26 +59,37 @@ export default function CommunityFeed({ initialPosts, now: initialNow }: { initi
 
   return (
     <>
-      <Card role="region" aria-label="New post" className="composer">
-        <label htmlFor="new-post" className="composer__label">Start a post</label>
-        <textarea id="new-post" rows={3} className="textarea" placeholder="What do you need help with, or who are you looking for?" value={draft} onChange={(e) => setDraft(e.target.value)} />
-        <div className="composer__foot">
-          <div className="pill-group" role="group" aria-label="Post tag">
-            {TAGS.map((t) => {
-              const on = draftTag === t;
-              return (
-                <button key={t} type="button" className="pill pill--small" aria-pressed={on} onClick={() => setDraftTag(t)}
-                  style={on ? undefined : { background: tagColors[t].bg, color: tagColors[t].fg, borderColor: tagColors[t].bg }}>
-                  {t}
-                </button>
-              );
-            })}
+      {currentUser ? (
+        <Card role="region" aria-label="New post" className="composer">
+          <label htmlFor="new-post" className="composer__label">Start a post</label>
+          <textarea id="new-post" rows={3} className="textarea" placeholder="What do you need help with, or who are you looking for?" value={draft} onChange={(e) => setDraft(e.target.value)} />
+          <div className="composer__foot">
+            <div className="pill-group" role="group" aria-label="Post tag">
+              {TAGS.map((t) => {
+                const on = draftTag === t;
+                return (
+                  <button key={t} type="button" className="pill pill--small" aria-pressed={on} onClick={() => setDraftTag(t)}
+                    style={on ? undefined : { background: tagColors[t].bg, color: tagColors[t].fg, borderColor: tagColors[t].bg }}>
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+            <Button onClick={submit} disabled={!draft.trim()}>
+              Post it
+            </Button>
           </div>
-          <Button onClick={submit} disabled={!draft.trim()}>
-            Post it
-          </Button>
-        </div>
-      </Card>
+        </Card>
+      ) : (
+        <Card role="region" aria-label="Sign in to post" className="composer" style={{ gap: 10 }}>
+          <h2 className="composer__label">Join the campus conversation</h2>
+          <p style={{ fontSize: 15, lineHeight: 1.45 }}>Sign in or create an account to start conversations, ask for project help, or find hackathon teammates.</p>
+          <div className="btn-row" style={{ marginTop: 4 }}>
+            <Link href="/auth/sign-in" className="btn btn--primary">Sign in</Link>
+            <Link href="/auth/register" className="btn btn--outline">Create an account</Link>
+          </div>
+        </Card>
+      )}
 
       <FilterPills label="Filter by tag" options={FILTERS} value={filter} onChange={setFilter} />
 

@@ -1,15 +1,17 @@
 import PageHero from '@/components/PageHero';
 import CommunityFeed from '@/components/CommunityFeed';
+import { getCurrentUser } from '@/lib/auth';
 import { posts } from '@/lib/data';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Community · CampusHub · UGSOT' };
 
-export default function CommunityPage() {
+export default async function CommunityPage() {
   const sorted = [...posts].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   // This route is dynamic so relative post times should use the current request time.
   // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
+  const currentUser = await getCurrentUser();
   return (
     <main className="container page page--narrow">
       <PageHero
@@ -19,7 +21,7 @@ export default function CommunityPage() {
         after="?"
         sub="Ask questions, get unstuck, and find people to build with."
       />
-      <CommunityFeed initialPosts={sorted} now={now} />
+      <CommunityFeed initialPosts={sorted} now={now} currentUser={currentUser} />
     </main>
   );
 }

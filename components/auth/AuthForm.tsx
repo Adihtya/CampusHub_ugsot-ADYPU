@@ -109,6 +109,10 @@ export default function AuthForm({ mode }: { mode: Mode }) {
 
   return (
     <div className="auth-panel">
+      <div className="auth-heading">
+        <h1 className="auth-heading__title">{registering ? 'Join CampusHub' : 'Welcome back'}</h1>
+        <p>{registering ? 'Create your student account to get started.' : 'Sign in with your college account to continue.'}</p>
+      </div>
       <div className="auth-tabs" role="tablist" aria-label="Account access">
         <button id="auth-tab-login" className={registering ? 'auth-tab' : 'auth-tab auth-tab--active'}
           type="button" role="tab" aria-selected={!registering} aria-controls="auth-form"
