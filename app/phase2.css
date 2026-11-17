@@ -772,6 +772,10 @@
   margin-top: 16px;
 }
 
+.suggestions-form .field {
+  flex: 0 0 auto;
+}
+
 .suggestions-form__actions {
   display: flex;
   align-items: center;

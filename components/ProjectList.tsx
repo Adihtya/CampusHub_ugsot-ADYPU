@@ -237,7 +237,7 @@ export default function ProjectList({ initialProjects, currentUser }: Props) {
           {uploadError && <p className="form-error" role="alert">{uploadError}</p>}
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
-            <div>
+            <div className="field">
               <label htmlFor="proj-title" className="field__label">Project Title *</label>
               <input
                 id="proj-title"
@@ -250,7 +250,7 @@ export default function ProjectList({ initialProjects, currentUser }: Props) {
               />
             </div>
 
-            <div>
+            <div className="field">
               <label htmlFor="proj-tech" className="field__label">Tech Stack (comma separated) *</label>
               <input
                 id="proj-tech"
@@ -264,7 +264,7 @@ export default function ProjectList({ initialProjects, currentUser }: Props) {
             </div>
           </div>
 
-          <div>
+          <div className="field">
             <label htmlFor="proj-short" className="field__label">Short Elevator Pitch (1-2 sentences) *</label>
             <input
               id="proj-short"
@@ -277,7 +277,7 @@ export default function ProjectList({ initialProjects, currentUser }: Props) {
             />
           </div>
 
-          <div>
+          <div className="field">
             <label htmlFor="proj-desc" className="field__label">Full Project Description *</label>
             <textarea
               id="proj-desc"
@@ -291,7 +291,7 @@ export default function ProjectList({ initialProjects, currentUser }: Props) {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
-            <div>
+            <div className="field">
               <label htmlFor="proj-github" className="field__label">GitHub Repo URL</label>
               <input
                 id="proj-github"
@@ -303,7 +303,7 @@ export default function ProjectList({ initialProjects, currentUser }: Props) {
               />
             </div>
 
-            <div>
+            <div className="field">
               <label htmlFor="proj-demo" className="field__label">Live Demo URL</label>
               <input
                 id="proj-demo"
@@ -315,7 +315,7 @@ export default function ProjectList({ initialProjects, currentUser }: Props) {
               />
             </div>
 
-            <div>
+            <div className="field">
               <label htmlFor="proj-image" className="field__label">Screenshot / Cover Image URL</label>
               <input
                 id="proj-image"

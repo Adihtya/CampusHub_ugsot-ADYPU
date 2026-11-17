@@ -418,7 +418,7 @@ export default function ForumView({ initialPosts, currentUser }: Props) {
           </h2>
           {composerError && <p className="form-error" role="alert">{composerError}</p>}
 
-          <div>
+          <div className="field">
             <label htmlFor="post-title" className="field__label">Title</label>
             <input
               id="post-title"
@@ -431,7 +431,7 @@ export default function ForumView({ initialPosts, currentUser }: Props) {
             />
           </div>
 
-          <div>
+          <div className="field">
             <label htmlFor="post-content" className="field__label">Content (Markdown or plain text)</label>
             <textarea
               id="post-content"

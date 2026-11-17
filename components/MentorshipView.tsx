@@ -698,7 +698,7 @@ export default function MentorshipView({
               <form onSubmit={handleBookSession} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {bookingError && <p className="form-error" role="alert">{bookingError}</p>}
 
-                <div>
+                <div className="field">
                   <label htmlFor="book-date" className="field__label">Date *</label>
                   <input
                     id="book-date"
@@ -710,7 +710,7 @@ export default function MentorshipView({
                   />
                 </div>
 
-                <div>
+                <div className="field">
                   <label htmlFor="book-slot" className="field__label">Choose Availability Slot *</label>
                   <select
                     id="book-slot"
@@ -725,7 +725,7 @@ export default function MentorshipView({
                   </select>
                 </div>
 
-                <div>
+                <div className="field">
                   <label htmlFor="book-topic" className="field__label">Topic / Goal *</label>
                   <input
                     id="book-topic"
@@ -738,7 +738,7 @@ export default function MentorshipView({
                   />
                 </div>
 
-                <div>
+                <div className="field">
                   <label htmlFor="book-notes" className="field__label">Notes / Questions for {bookingMentor.name}</label>
                   <textarea
                     id="book-notes"
@@ -781,7 +781,7 @@ export default function MentorshipView({
               </div>
             ) : (
               <form onSubmit={handleApplyMentor} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <div>
+                <div className="field">
                   <label htmlFor="apply-bio" className="field__label">Bio & Track Record *</label>
                   <textarea
                     id="apply-bio"
@@ -794,7 +794,7 @@ export default function MentorshipView({
                   />
                 </div>
 
-                <div>
+                <div className="field">
                   <label htmlFor="apply-skills" className="field__label">Technical Skills (comma separated) *</label>
                   <input
                     id="apply-skills"
@@ -807,7 +807,7 @@ export default function MentorshipView({
                   />
                 </div>
 
-                <div>
+                <div className="field">
                   <label htmlFor="apply-areas" className="field__label">Mentorship Focus Areas (comma separated)</label>
                   <input
                     id="apply-areas"
@@ -819,7 +819,7 @@ export default function MentorshipView({
                   />
                 </div>
 
-                <div>
+                <div className="field">
                   <label htmlFor="apply-slots" className="field__label">Weekly Availability Slots (comma separated) *</label>
                   <input
                     id="apply-slots"
@@ -853,7 +853,7 @@ export default function MentorshipView({
             <h3 style={{ margin: 0, fontSize: 18 }}>Request a Code Review</h3>
 
             <form onSubmit={handleRequestReview} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div>
+              <div className="field">
                 <label htmlFor="rev-title" className="field__label">Review Title *</label>
                 <input
                   id="rev-title"
@@ -866,7 +866,7 @@ export default function MentorshipView({
                 />
               </div>
 
-              <div>
+              <div className="field">
                 <label htmlFor="rev-language" className="field__label">Primary Language *</label>
                 <select
                   id="rev-language"
@@ -884,7 +884,7 @@ export default function MentorshipView({
                 </select>
               </div>
 
-              <div>
+              <div className="field">
                 <label htmlFor="rev-github" className="field__label">GitHub Repo or PR Link</label>
                 <input
                   id="rev-github"
@@ -896,7 +896,7 @@ export default function MentorshipView({
                 />
               </div>
 
-              <div>
+              <div className="field">
                 <label htmlFor="rev-snippet" className="field__label">Or Paste Code Snippet</label>
                 <textarea
                   id="rev-snippet"
@@ -909,7 +909,7 @@ export default function MentorshipView({
                 />
               </div>
 
-              <div>
+              <div className="field">
                 <label htmlFor="rev-notes" className="field__label">What specific feedback do you need? *</label>
                 <textarea
                   id="rev-notes"
