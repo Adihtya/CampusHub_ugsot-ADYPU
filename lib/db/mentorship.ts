@@ -1,6 +1,7 @@
 import 'server-only';
 import { createSupabaseServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth';
+import { createNotification } from './notifications';
 import type { CodeReview, MentorProfile, MentorshipSession } from '@/lib/types';
 
 // Sample fallback mentors
@@ -240,6 +241,28 @@ export async function bookMentorshipSession(data: {
     throw new Error(`Failed to book session: ${error.message}`);
   }
 
+  // Notify mentor of new booking
+  try {
+    const { data: mentorRecord } = await supabase
+      .from('mentor_profiles')
+      .select('user_id')
+      .eq('id', data.mentorId)
+      .maybeSingle();
+
+    if (mentorRecord?.user_id) {
+      await createNotification({
+        userId: mentorRecord.user_id,
+        actorId: currentUser.id,
+        type: 'mentor_session',
+        title: 'New mentorship session booked',
+        message: `${currentUser.name || 'A student'} booked a session on ${data.date} (${data.slot})`,
+        linkUrl: '/mentorship',
+      });
+    }
+  } catch {
+    // Non-fatal
+  }
+
   return row.id;
 }
 
@@ -456,6 +479,28 @@ export async function submitReviewFeedback(reviewId: string, feedback: string): 
     .eq('id', reviewId);
 
   if (error) throw new Error(`Failed to submit feedback: ${error.message}`);
+
+  // Notify review requester
+  try {
+    const { data: rev } = await supabase
+      .from('code_reviews')
+      .select('requester_id, title')
+      .eq('id', reviewId)
+      .maybeSingle();
+
+    if (rev?.requester_id && rev.requester_id !== currentUser.id) {
+      await createNotification({
+        userId: rev.requester_id,
+        actorId: currentUser.id,
+        type: 'code_review',
+        title: 'Feedback submitted on your code review',
+        message: `${currentUser.name || 'A mentor'} completed your review: "${rev.title}"`,
+        linkUrl: '/mentorship',
+      });
+    }
+  } catch {
+    // Non-fatal
+  }
 }
 
 export async function resolveCodeReview(reviewId: string): Promise<void> {

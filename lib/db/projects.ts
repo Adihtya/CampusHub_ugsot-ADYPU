@@ -1,6 +1,8 @@
 import 'server-only';
 import { createSupabaseServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth';
+import { checkUserPostingEligibility } from './moderation';
+import { createNotification } from './notifications';
 import type { CollaborationRequest, GitHubRepoStats, Project, ProjectComment } from '@/lib/types';
 import type { Database } from '@/lib/db/database.types';
 
@@ -424,6 +426,12 @@ export async function createProject(data: {
   const currentUser = await getCurrentUser();
   if (!currentUser) throw new Error('You must be signed in to post a project.');
 
+  // Rate-limit, spam cooldown, and suspension check
+  const eligibility = await checkUserPostingEligibility(currentUser.id, data.description);
+  if (!eligibility.allowed) {
+    throw new Error(eligibility.reason || 'You are not eligible to upload a project right now.');
+  }
+
   const { data: row, error } = await supabase
     .from('projects')
     .insert({
@@ -507,6 +515,28 @@ export async function toggleProjectLike(projectId: string): Promise<{ liked: boo
     await supabase.from('project_likes').delete().eq('project_id', projectId).eq('user_id', currentUser.id);
   } else {
     await supabase.from('project_likes').insert({ project_id: projectId, user_id: currentUser.id });
+
+    // Notify project owner of like
+    try {
+      const { data: proj } = await supabase
+        .from('projects')
+        .select('id, title, owner_id')
+        .eq('id', projectId)
+        .maybeSingle();
+
+      if (proj && proj.owner_id && proj.owner_id !== currentUser.id) {
+        await createNotification({
+          userId: proj.owner_id,
+          actorId: currentUser.id,
+          type: 'project_like',
+          title: 'Someone liked your project',
+          message: `${currentUser.name || 'A student'} liked "${proj.title}"`,
+          linkUrl: `/projects/${proj.id}`,
+        });
+      }
+    } catch {
+      // Non-fatal
+    }
   }
 
   const { data: total } = await supabase.from('project_likes').select('user_id').eq('project_id', projectId);
@@ -583,6 +613,12 @@ export async function addProjectComment(projectId: string, content: string): Pro
   const currentUser = await getCurrentUser();
   if (!currentUser) throw new Error('You must be signed in to comment.');
 
+  // Rate-limit, spam cooldown, and suspension check
+  const eligibility = await checkUserPostingEligibility(currentUser.id, content);
+  if (!eligibility.allowed) {
+    throw new Error(eligibility.reason || 'You are not eligible to comment right now.');
+  }
+
   const { data, error } = await supabase
     .from('project_comments')
     .insert({
@@ -594,6 +630,29 @@ export async function addProjectComment(projectId: string, content: string): Pro
     .single();
 
   if (error) throw new Error(`Failed to post comment: ${error.message}`);
+
+  // Notify project owner of new comment
+  try {
+    const { data: proj } = await supabase
+      .from('projects')
+      .select('id, title, owner_id')
+      .eq('id', projectId)
+      .maybeSingle();
+
+    if (proj && proj.owner_id && proj.owner_id !== currentUser.id) {
+      await createNotification({
+        userId: proj.owner_id,
+        actorId: currentUser.id,
+        type: 'project_comment',
+        title: 'New comment on your project',
+        message: `${currentUser.name || 'A student'} commented on "${proj.title}"`,
+        linkUrl: `/projects/${proj.id}#comments`,
+      });
+    }
+  } catch {
+    // Non-fatal
+  }
+
   return data.id;
 }
 
@@ -628,6 +687,29 @@ export async function sendCollaborationRequest(
     .single();
 
   if (error) throw new Error(`Failed to send request: ${error.message}`);
+
+  // Notify project owner
+  try {
+    const { data: proj } = await supabase
+      .from('projects')
+      .select('id, title, owner_id')
+      .eq('id', projectId)
+      .maybeSingle();
+
+    if (proj && proj.owner_id && proj.owner_id !== currentUser.id) {
+      await createNotification({
+        userId: proj.owner_id,
+        actorId: currentUser.id,
+        type: 'collaboration_request',
+        title: 'New collaboration request',
+        message: `${currentUser.name || 'A student'} wants to join "${proj.title}" as ${roleInterested}`,
+        linkUrl: `/projects/${proj.id}`,
+      });
+    }
+  } catch {
+    // Non-fatal
+  }
+
   return data.id;
 }
 

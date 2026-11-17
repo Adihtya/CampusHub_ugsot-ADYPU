@@ -9,6 +9,12 @@ export type CurrentUser = {
   skills?: string[];
   bio?: string | null;
   courseYear?: string | null;
+  interests?: string[];
+  goals?: string[];
+  onboardingCompleted?: boolean;
+  isProfilePrivate?: boolean;
+  isSuspended?: boolean;
+  warningCount?: number;
 };
 
 export class AuthServiceError extends Error {
@@ -73,6 +79,17 @@ export async function updatePassword(password: string) {
   }
 }
 
+export async function resendEmailConfirmation(email: string) {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email: email.trim().toLowerCase(),
+  });
+  if (error) {
+    throw new AuthServiceError('Unable to resend confirmation email. Please check your email or wait a moment.', 400);
+  }
+}
+
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   if (!isSupabaseConfigured()) return null;
   const supabase = await createSupabaseServerClient();
@@ -85,7 +102,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
 
   const { data: profile, error } = await supabase
     .from('profiles')
-    .select('full_name, role, github_username, skills, bio, course_year')
+    .select('full_name, role, github_username, skills, bio, course_year, interests, goals, onboarding_completed, is_profile_private, is_suspended, warning_count')
     .eq('id', authData.user.id)
     .maybeSingle();
   if (error) {
@@ -102,5 +119,11 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     skills: profile?.skills ?? (Array.isArray(authData.user.user_metadata?.skills) ? authData.user.user_metadata.skills : []),
     bio: profile?.bio || authData.user.user_metadata?.bio || null,
     courseYear: profile?.course_year || authData.user.user_metadata?.course_year || null,
+    interests: profile?.interests ?? (Array.isArray(authData.user.user_metadata?.interests) ? authData.user.user_metadata.interests : []),
+    goals: profile?.goals ?? (Array.isArray(authData.user.user_metadata?.goals) ? authData.user.user_metadata.goals : []),
+    onboardingCompleted: Boolean(profile?.onboarding_completed || authData.user.user_metadata?.onboarding_completed),
+    isProfilePrivate: Boolean(profile?.is_profile_private || authData.user.user_metadata?.is_profile_private),
+    isSuspended: Boolean(profile?.is_suspended),
+    warningCount: Number(profile?.warning_count || 0),
   };
 }

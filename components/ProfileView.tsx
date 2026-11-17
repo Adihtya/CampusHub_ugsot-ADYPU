@@ -261,7 +261,12 @@ export default function ProfileView({
                 <div className="progress" role="progressbar" aria-valuenow={profile.profileCompleteness} aria-valuemin={0} aria-valuemax={100} aria-label="Profile completeness">
                   <div className="progress__bar" style={{ width: `${profile.profileCompleteness}%` }} />
                 </div>
-                <p className="muted-note">Add a portfolio project to hit 100%. Only you can see this.</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, flexWrap: 'wrap', gap: 6 }}>
+                  <p className="muted-note" style={{ margin: 0 }}>Add skills, interests, and projects to hit 100%. Only you can see this.</p>
+                  <Link href="/onboarding" style={{ fontSize: 12, fontWeight: 700, color: '#2B50FF', textDecoration: 'underline' }}>
+                    Quick Onboarding Wizard →
+                  </Link>
+                </div>
               </Card>
             )}
 

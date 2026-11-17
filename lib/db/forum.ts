@@ -1,6 +1,8 @@
 import 'server-only';
 import { createSupabaseServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth';
+import { checkUserPostingEligibility } from './moderation';
+import { createNotification } from './notifications';
 import type { ForumAnswer, ForumPost, ForumPostType, ForumTag } from '@/lib/types';
 import { FORUM_TAGS } from '@/lib/types';
 
@@ -353,6 +355,12 @@ export async function createForumPost(post: {
   const currentUser = await getCurrentUser();
   if (!currentUser) throw new Error('You must be signed in to create a post.');
 
+  // Rate-limit, spam cooldown, and suspension check
+  const eligibility = await checkUserPostingEligibility(currentUser.id, post.content);
+  if (!eligibility.allowed) {
+    throw new Error(eligibility.reason || 'You are not eligible to post right now.');
+  }
+
   if (post.type === 'announcement' && currentUser.role !== 'organizer') {
     throw new Error('Only organizers and admins can post announcements.');
   }
@@ -378,6 +386,12 @@ export async function createForumAnswer(postId: string, content: string): Promis
   const currentUser = await getCurrentUser();
   if (!currentUser) throw new Error('You must be signed in to reply.');
 
+  // Rate-limit, spam cooldown, and suspension check
+  const eligibility = await checkUserPostingEligibility(currentUser.id, content);
+  if (!eligibility.allowed) {
+    throw new Error(eligibility.reason || 'You are not eligible to reply right now.');
+  }
+
   const { data, error } = await supabase
     .from('forum_answers')
     .insert({
@@ -389,6 +403,29 @@ export async function createForumAnswer(postId: string, content: string): Promis
     .single();
 
   if (error) throw new Error(`Failed to submit reply: ${error.message}`);
+
+  // Notify question author about the new answer
+  try {
+    const { data: post } = await supabase
+      .from('forum_posts')
+      .select('id, title, author_id')
+      .eq('id', postId)
+      .maybeSingle();
+
+    if (post && post.author_id && post.author_id !== currentUser.id) {
+      await createNotification({
+        userId: post.author_id,
+        actorId: currentUser.id,
+        type: 'answer_received',
+        title: 'New reply to your forum post',
+        message: `${currentUser.name || 'A student'} replied to "${post.title}"`,
+        linkUrl: `/forum/${post.id}`,
+      });
+    }
+  } catch {
+    // Non-fatal
+  }
+
   return data.id;
 }
 
@@ -453,6 +490,28 @@ export async function acceptAnswer(postId: string, answerId: string): Promise<vo
     .eq('id', postId);
 
   if (error) throw new Error(`Failed to accept answer: ${error.message}`);
+
+  // Notify answer author that their solution was accepted
+  try {
+    const { data: answer } = await supabase
+      .from('forum_answers')
+      .select('id, author_id')
+      .eq('id', answerId)
+      .maybeSingle();
+
+    if (answer && answer.author_id && answer.author_id !== currentUser.id) {
+      await createNotification({
+        userId: answer.author_id,
+        actorId: currentUser.id,
+        type: 'answer_accepted',
+        title: 'Your answer was accepted!',
+        message: `${currentUser.name || 'The author'} marked your reply as the accepted solution!`,
+        linkUrl: `/forum/${postId}`,
+      });
+    }
+  } catch {
+    // Non-fatal
+  }
 }
 
 export async function deleteForumPost(postId: string): Promise<void> {

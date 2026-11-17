@@ -167,7 +167,37 @@ export default function AuthForm({ mode }: { mode: Mode }) {
         </>
       )}
       {formError && <p className="form-error" role="alert">{formError}</p>}
-      {formMessage && <p className="form-success" role="status">{formMessage}</p>}
+      {formMessage && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <p className="form-success" role="status">{formMessage}</p>
+          <button
+            type="button"
+            className="btn btn--outline"
+            style={{ fontSize: 13, padding: '6px 12px', alignSelf: 'flex-start' }}
+            disabled={submitting}
+            onClick={async () => {
+              if (!values.email) return;
+              try {
+                setFormMessage('Sending new confirmation email...');
+                const res = await fetch('/api/auth/resend-confirmation', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ email: values.email }),
+                });
+                if (res.ok) {
+                  setFormMessage('A new confirmation email has been sent. Check your inbox & spam folder.');
+                } else {
+                  setFormError('Unable to resend confirmation email. Please wait a moment before trying again.');
+                }
+              } catch {
+                setFormError('Network error trying to resend confirmation.');
+              }
+            }}
+          >
+            Resend confirmation email
+          </button>
+        </div>
+      )}
       {!registering && (
         <Link href="/auth/forgot-password" className="auth-form__forgot">Forgot password?</Link>
       )}

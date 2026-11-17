@@ -294,3 +294,81 @@ export interface UserLeaderboardPosition {
   nextRankScore: number;
   badges: string[];
 }
+
+export type NotificationType =
+  | 'team_invite'
+  | 'registration_confirmed'
+  | 'waitlist_promoted'
+  | 'mentor_session'
+  | 'code_review'
+  | 'answer_received'
+  | 'answer_accepted'
+  | 'project_interaction'
+  | 'project_comment'
+  | 'project_like'
+  | 'collaboration_request'
+  | 'report_outcome'
+  | 'announcement'
+  | 'system';
+
+export interface AppNotification {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  link: string | null;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface NotificationPreferences {
+  userId: string;
+  emailNotifications: boolean;
+  notifyTeamInvites: boolean;
+  notifyEventUpdates: boolean;
+  notifyMentorship: boolean;
+  notifyForum: boolean;
+  notifyProjects: boolean;
+}
+
+export type ReportItemType = 'forum_post' | 'forum_answer' | 'project' | 'project_comment' | 'user';
+export type ReportStatus = 'pending' | 'reviewed' | 'dismissed' | 'action_taken';
+
+export interface ReportItem {
+  id: string;
+  reporterId: string;
+  reporterName?: string;
+  reporterEmail?: string;
+  itemType: ReportItemType;
+  itemId: string;
+  itemTitle?: string;
+  reason: string;
+  details?: string | null;
+  status: ReportStatus;
+  moderatorId?: string | null;
+  resolutionNotes?: string | null;
+  createdAt: string;
+  resolvedAt?: string | null;
+}
+
+export interface ModerationLog {
+  id: string;
+  moderatorId: string;
+  moderatorName?: string;
+  action: string;
+  targetType: string;
+  targetId: string;
+  details?: string | null;
+  createdAt: string;
+}
+
+export interface GlobalSearchResults {
+  query: string;
+  totalCount: number;
+  events: Array<{ id: string; title: string; category: string; start: string; where: string }>;
+  projects: Array<{ id: string; title: string; shortDescription: string; techStack: string[] }>;
+  forum: Array<{ id: string; title: string; bodySnippet: string; type: string; tags: string[] }>;
+  opportunities: Array<{ id: string; title: string; organization: string; category: string; location: string }>;
+  students: Array<{ id: string; name: string; courseYear: string | null; skills: string[] }>;
+}

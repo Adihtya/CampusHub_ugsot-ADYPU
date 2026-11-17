@@ -40,6 +40,13 @@ export type Database = {
           skills: string[] | null;
           bio: string | null;
           is_hidden_from_leaderboard: boolean;
+          interests: string[];
+          goals: string[];
+          onboarding_completed: boolean;
+          is_profile_private: boolean;
+          is_suspended: boolean;
+          warning_count: number;
+          suspension_reason: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -53,6 +60,13 @@ export type Database = {
           skills?: string[] | null;
           bio?: string | null;
           is_hidden_from_leaderboard?: boolean;
+          interests?: string[];
+          goals?: string[];
+          onboarding_completed?: boolean;
+          is_profile_private?: boolean;
+          is_suspended?: boolean;
+          warning_count?: number;
+          suspension_reason?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -148,6 +162,7 @@ export type Database = {
           tags: string[];
           accepted_answer_id: string | null;
           is_reported: boolean;
+          is_hidden: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -160,6 +175,7 @@ export type Database = {
           tags?: string[];
           accepted_answer_id?: string | null;
           is_reported?: boolean;
+          is_hidden?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -173,6 +189,7 @@ export type Database = {
           author_id: string;
           content: string;
           is_reported: boolean;
+          is_hidden: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -182,6 +199,7 @@ export type Database = {
           author_id: string;
           content: string;
           is_reported?: boolean;
+          is_hidden?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -237,6 +255,7 @@ export type Database = {
           looking_for_collaborators: boolean;
           roles_needed: string[];
           owner_id: string;
+          is_hidden: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -252,6 +271,7 @@ export type Database = {
           looking_for_collaborators?: boolean;
           roles_needed?: string[];
           owner_id: string;
+          is_hidden?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -271,8 +291,8 @@ export type Database = {
         Relationships: [];
       };
       project_comments: {
-        Row: { id: string; project_id: string; user_id: string; content: string; created_at: string };
-        Insert: { id?: string; project_id: string; user_id: string; content: string; created_at?: string };
+        Row: { id: string; project_id: string; user_id: string; content: string; is_hidden: boolean; created_at: string };
+        Insert: { id?: string; project_id: string; user_id: string; content: string; is_hidden?: boolean; created_at?: string };
         Update: Partial<Database['public']['Tables']['project_comments']['Insert']>;
         Relationships: [];
       };
@@ -446,6 +466,108 @@ export type Database = {
           description: string;
         };
         Update: Partial<Database['public']['Tables']['point_rules']['Insert']>;
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: string;
+          title: string;
+          message: string;
+          link: string | null;
+          is_read: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: string;
+          title: string;
+          message: string;
+          link?: string | null;
+          is_read?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['notifications']['Insert']>;
+        Relationships: [];
+      };
+      notification_preferences: {
+        Row: {
+          user_id: string;
+          email_notifications: boolean;
+          notify_team_invites: boolean;
+          notify_event_updates: boolean;
+          notify_mentorship: boolean;
+          notify_forum: boolean;
+          notify_projects: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          email_notifications?: boolean;
+          notify_team_invites?: boolean;
+          notify_event_updates?: boolean;
+          notify_mentorship?: boolean;
+          notify_forum?: boolean;
+          notify_projects?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['notification_preferences']['Insert']>;
+        Relationships: [];
+      };
+      reports: {
+        Row: {
+          id: string;
+          reporter_id: string;
+          item_type: 'forum_post' | 'forum_answer' | 'project' | 'project_comment' | 'user';
+          item_id: string;
+          reason: string;
+          details: string | null;
+          status: 'pending' | 'reviewed' | 'dismissed' | 'action_taken';
+          moderator_id: string | null;
+          resolution_notes: string | null;
+          created_at: string;
+          resolved_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          reporter_id: string;
+          item_type: 'forum_post' | 'forum_answer' | 'project' | 'project_comment' | 'user';
+          item_id: string;
+          reason: string;
+          details?: string | null;
+          status?: 'pending' | 'reviewed' | 'dismissed' | 'action_taken';
+          moderator_id?: string | null;
+          resolution_notes?: string | null;
+          created_at?: string;
+          resolved_at?: string | null;
+        };
+        Update: Partial<Database['public']['Tables']['reports']['Insert']>;
+        Relationships: [];
+      };
+      moderation_logs: {
+        Row: {
+          id: string;
+          moderator_id: string;
+          action: string;
+          target_type: string;
+          target_id: string;
+          details: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          moderator_id: string;
+          action: string;
+          target_type: string;
+          target_id: string;
+          details?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['moderation_logs']['Insert']>;
         Relationships: [];
       };
     };

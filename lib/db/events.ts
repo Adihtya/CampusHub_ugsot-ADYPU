@@ -349,6 +349,26 @@ export async function registerForEvent(eventId: string): Promise<EventRegistrati
   if (result !== 'registered' && result !== 'already_registered') {
     throw new Error('The event registration could not be completed.');
   }
+
+  if (result === 'registered') {
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      if (authData?.user) {
+        const { createNotification } = await import('./notifications');
+        const eventItem = getEvent(eventId);
+        await createNotification({
+          userId: authData.user.id,
+          type: 'registration_confirmed',
+          title: 'Event registration confirmed',
+          message: eventItem ? `You are registered for "${eventItem.title}"` : 'Your event spot has been reserved.',
+          linkUrl: `/events/${eventId}`,
+        });
+      }
+    } catch {
+      // Non-fatal
+    }
+  }
+
   const [status] = await getEventRegistrationStatuses([eventId]);
   if (!status) throw new Error('The event registration status could not be refreshed.');
   return status;
