@@ -9,7 +9,7 @@ export const primaryNavigationItems = [
   { href: '/', label: 'Home' },
   { href: '/events', label: 'Events' },
   { href: '/projects', label: 'Projects' },
-  { href: '/community', label: 'Forum' },
+  { href: '/community', label: 'Community' },
 ] as const;
 
 export const moreNavigationItems: MoreNavigationItem[] = [

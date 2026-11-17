@@ -34,7 +34,7 @@ npm run build        # Production Next.js build
 - **Public Verification**: `/verify` page allows verifying authenticity by unique Certificate ID.
 - **My Certificates**: Embedded directly in the user profile view.
 
-### Part 2: Developer Forum (`/community`)
+### Part 2: Community (`/community`)
 - **Three Core Tabs**: *Questions*, *Discussions*, and *Announcements* (announcements postable exclusively by organizers/admins).
 - **Q&A with Accepted Answers**: Authors can accept answers (displayed first with an accepted badge).
 - **Upvotes & Search**: Single-vote toggle per user, topic tag filtering (`Python`, `JavaScript`, `Java`, `C/C++`, `Web`, `AI/ML`, `DSA`, `Git`, `Other`), and full keyword search.
@@ -58,7 +58,7 @@ npm run build        # Production Next.js build
 - **Bookmarks & Admin Management**: Organizers can post, edit, and delete opportunities; students can bookmark.
 
 ### Part 6: Developer Activity Dashboard (`/profile` -> Dashboard Tab)
-- **Live Metrics**: Projects posted, events attended vs registered, certificates earned, accepted forum answers, completed mentorships, and streak counter.
+- **Live Metrics**: Projects posted, events attended vs registered, certificates earned, accepted community answers, completed mentorships, and streak counter.
 - **GitHub Insights**: Pulls public repo counts, followers, and recent commits for the connected GitHub handle.
 - **Native SVG / CSS Activity Chart**: Zero external charting libraries; renders responsive monthly contributions.
 - **Skills Cloud**: Visual tags cloud of verified competencies.
@@ -66,8 +66,8 @@ npm run build        # Production Next.js build
 - **Strict Role Security**: Users can update their profile information and skills, but role changes from the client are rejected by database triggers.
 
 ### Part 7: Navigation & Responsive Design
-- **Desktop Navigation**: *Home*, *Events*, *Projects*, *Forum*, *Mentorship*, *Opportunities*, *Students*, plus avatar/sign-in button.
-- **Mobile Navigation**: Bottom bar with 4 primary destinations (*Home*, *Events*, *Projects*, *Forum*) plus an expanding *More* drawer to prevent navigation overflow.
+- **Desktop Navigation**: *Home*, *Events*, *Projects*, *Community*, *Mentorship*, *Opportunities*, *Students*, plus avatar/sign-in button.
+- **Mobile Navigation**: Bottom bar with 4 primary destinations (*Home*, *Events*, *Projects*, *Community*) plus an expanding *More* drawer to prevent navigation overflow.
 
 ---
 
@@ -103,7 +103,7 @@ where email = 'your-email@example.com';
 
 All database calls are strictly isolated within `lib/db/`:
 - `lib/db/events.ts`
-- `lib/db/forum.ts`
+- `lib/db/community.ts`
 - `lib/db/projects.ts`
 - `lib/db/mentorship.ts`
 - `lib/db/opportunities.ts`

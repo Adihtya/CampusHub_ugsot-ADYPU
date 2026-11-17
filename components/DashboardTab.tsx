@@ -18,7 +18,7 @@ type Props = {
 const BADGE_CONFIG: Record<string, { icon: string; bg: string; desc: string }> = {
   'First Event': { icon: '🌱', bg: '#E0F2FE', desc: 'Registered or attended your first campus event' },
   'Hackathon Hero': { icon: '🚀', bg: '#FEE2E2', desc: 'Joined or created 3+ hackathon teams' },
-  'Problem Solver': { icon: '💡', bg: '#FEF08A', desc: '5+ accepted forum answers helping peers' },
+  'Problem Solver': { icon: '💡', bg: '#FEF08A', desc: '5+ accepted community answers helping peers' },
   'Builder': { icon: '🛠️', bg: '#E9D5FF', desc: 'Published 3+ student projects to the showcase' },
   'Mentor': { icon: '🎓', bg: '#DCFCE7', desc: 'Completed 5+ 1:1 mentorship or review sessions' },
   'Top 10 This Month': { icon: '🏆', bg: '#FFE14D', desc: 'Ranked in the top 10 on the campus leaderboard' },
@@ -295,7 +295,7 @@ export default function DashboardTab({
               textAlign: 'center',
             }}
           >
-            No badges unlocked yet. Register for an event, publish a project, or answer questions in the forum to earn your first badge!
+            No badges unlocked yet. Register for an event, publish a project, or answer questions in the community to earn your first badge!
           </div>
         )}
       </div>

@@ -198,7 +198,7 @@ export async function getUserDashboardData(
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId);
 
-    // 5. Accepted forum answers (answers by this author that were accepted on questions)
+    // 5. Accepted community answers (answers by this author that were accepted on questions)
     const { data: userAnswers } = await supabase
       .from('forum_answers')
       .select('id')

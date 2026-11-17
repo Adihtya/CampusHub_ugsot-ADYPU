@@ -7,14 +7,19 @@ import type { ForumAnswer, ForumPost, ForumPostType, ForumTag } from '@/lib/type
 import { FORUM_TAGS } from '@/lib/types';
 
 export type { ForumAnswer, ForumPost, ForumPostType, ForumTag };
+export type CommunityPost = ForumPost;
+export type CommunityAnswer = ForumAnswer;
+export type CommunityPostType = ForumPostType;
+export type CommunityTag = ForumTag;
 export { FORUM_TAGS };
+export { FORUM_TAGS as COMMUNITY_TAGS };
 
 // Built-in starter seed posts for instant usability
 const SAMPLE_POSTS: ForumPost[] = [
   {
     id: 'sample-post-1',
     type: 'announcement',
-    title: 'Welcome to the UGSOT Developer Forum!',
+    title: 'Welcome to the UGSOT Community!',
     content: 'This is our official campus community space for questions, tech discussions, code debugging, and project updates. Organizers will post official hackathon updates here.',
     authorId: 'admin',
     authorName: 'UGSOT Admin',
@@ -417,9 +422,9 @@ export async function createForumAnswer(postId: string, content: string): Promis
         userId: post.author_id,
         actorId: currentUser.id,
         type: 'answer_received',
-        title: 'New reply to your forum post',
+        title: 'New reply to your community post',
         message: `${currentUser.name || 'A student'} replied to "${post.title}"`,
-        linkUrl: `/forum/${post.id}`,
+        linkUrl: `/community?post=${post.id}`,
       });
     }
   } catch {
@@ -506,7 +511,7 @@ export async function acceptAnswer(postId: string, answerId: string): Promise<vo
         type: 'answer_accepted',
         title: 'Your answer was accepted!',
         message: `${currentUser.name || 'The author'} marked your reply as the accepted solution!`,
-        linkUrl: `/forum/${postId}`,
+        linkUrl: `/community?post=${postId}`,
       });
     }
   } catch {
@@ -551,3 +556,13 @@ export async function reportForumItem(
   const table = itemType === 'post' ? 'forum_posts' : 'forum_answers';
   await supabase.from(table).update({ is_reported: true }).eq('id', itemId);
 }
+
+// Community alias exports
+export const getCommunityPosts = getForumPosts;
+export const getCommunityPostWithAnswers = getForumPostWithAnswers;
+export const createCommunityPost = createForumPost;
+export const createCommunityAnswer = createForumAnswer;
+export const deleteCommunityPost = deleteForumPost;
+export const deleteCommunityAnswer = deleteForumAnswer;
+export const reportCommunityItem = reportForumItem;
+

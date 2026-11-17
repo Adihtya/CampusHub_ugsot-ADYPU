@@ -73,7 +73,7 @@ export async function performGlobalSearch(rawQuery: string): Promise<GlobalSearc
       .or(`title.ilike.%${query}%,short_description.ilike.%${query}%`)
       .limit(6);
 
-    // 2. Forum posts search
+    // 2. Community posts search
     const { data: dbPosts } = await supabase
       .from('forum_posts')
       .select('id, title, content, type, tags')

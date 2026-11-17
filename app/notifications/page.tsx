@@ -25,7 +25,7 @@ export default async function NotificationsPage() {
         tag="Updates · Invites · Activity"
         before="Your "
         highlight="Notifications"
-        sub="Stay informed on team invites, event updates, mentorship sessions, and forum activity."
+        sub="Stay informed on team invites, event updates, mentorship sessions, and community activity."
       />
       <div style={{ marginTop: 24 }}>
         <NotificationsView

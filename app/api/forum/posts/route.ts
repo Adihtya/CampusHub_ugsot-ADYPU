@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createForumPost, getForumPosts, type ForumPostType } from '@/lib/db/forum';
+import { createForumPost, getForumPosts, type ForumPostType } from '@/lib/db/community';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

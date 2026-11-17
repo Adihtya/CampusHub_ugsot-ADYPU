@@ -128,7 +128,7 @@ export default function ModerationView({ initialReports, initialLogs }: Props) {
 
   const handleSuspendUser = async (reportId: string, userId: string, isSuspended: boolean) => {
     const confirmMsg = isSuspended
-      ? 'Suspend this student from posting projects and forum messages?'
+      ? 'Suspend this student from posting projects and community messages?'
       : 'Unsuspend this student and restore posting privileges?';
     if (!confirm(confirmMsg)) return;
 

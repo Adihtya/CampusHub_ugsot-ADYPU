@@ -36,7 +36,7 @@ export default async function LeaderboardPage() {
         tag="Compete · Contribute · Level Up"
         before="Campus "
         highlight="Leaderboard"
-        sub="Earn points and badges by attending events, publishing student projects, solving forum questions, and mentoring peers."
+        sub="Earn points and badges by attending events, publishing student projects, answering community questions, and mentoring peers."
       />
       <div style={{ marginTop: 24 }}>
         <LeaderboardView

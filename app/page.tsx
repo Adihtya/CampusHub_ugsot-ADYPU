@@ -10,7 +10,7 @@ import Card from '@/components/ui/Card';
 import Tag from '@/components/ui/Tag';
 import FeatureSuggestions from '@/components/FeatureSuggestions';
 import { getEventRegistrationStatuses, type EventRegistrationStatus } from '@/lib/db/events';
-import { getForumPosts } from '@/lib/db/forum';
+import { getCommunityPosts } from '@/lib/db/community';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Home · CampusHub · UGSOT' };
@@ -30,10 +30,10 @@ export default async function HomePage() {
       return iso > today && iso <= weekEnd;
     }))
     .sort((a, b) => a.start.localeCompare(b.start));
-  let latestPosts: Awaited<ReturnType<typeof getForumPosts>> = [];
+  let latestPosts: Awaited<ReturnType<typeof getCommunityPosts>> = [];
   try {
-    const forumPosts = await getForumPosts();
-    latestPosts = forumPosts.slice(0, 3);
+    const communityPosts = await getCommunityPosts();
+    latestPosts = communityPosts.slice(0, 3);
   } catch {
     latestPosts = [];
   }
@@ -118,7 +118,7 @@ export default async function HomePage() {
         {latestPosts.length ? (
           <div className="post-grid">
             {latestPosts.map((post) => (
-              <Link key={post.id} href={`/forum/${post.id}`} className="post-card">
+              <Link key={post.id} href={`/community?post=${post.id}`} className="post-card">
                 <Tag style={{ background: '#FFE14D' }}>{post.tags[0] || post.type}</Tag>
                 <span className="post-card__title">{post.title}</span>
                 <span className="post-card__meta">{post.authorName} · {post.answersCount} {post.answersCount === 1 ? 'reply' : 'replies'}</span>

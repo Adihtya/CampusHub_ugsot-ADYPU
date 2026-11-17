@@ -28,7 +28,7 @@ const CATEGORY_FILTERS: { id: LeaderboardCategoryFilter; label: string; icon: st
   { id: 'overall', label: 'Overall', icon: '🏆' },
   { id: 'events', label: 'Events', icon: '🎟️' },
   { id: 'projects', label: 'Projects', icon: '💻' },
-  { id: 'forum', label: 'Forum', icon: '💬' },
+  { id: 'forum', label: 'Community', icon: '💬' },
   { id: 'mentorship', label: 'Mentorship', icon: '🤝' },
 ];
 
@@ -698,7 +698,7 @@ export default function LeaderboardView({
           <div style={{ fontSize: 44, marginBottom: 8 }}>🏅</div>
           <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>No points recorded yet</h3>
           <p style={{ margin: '6px 0 16px 0', fontSize: 14, color: '#555', maxWidth: 460, marginLeft: 'auto', marginRight: 'auto' }}>
-            Be the first to register for an event, upload a project, or answer questions on the forum to claim the #1 spot on campus!
+            Be the first to register for an event, upload a project, or answer questions in the community to claim the #1 spot on campus!
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 12 }}>
             <Link
@@ -971,9 +971,9 @@ export default function LeaderboardView({
                 </ul>
               </div>
 
-              {/* Forum Rules */}
+              {/* Community Rules */}
               <div style={{ padding: 12, backgroundColor: '#FAF8F5', border: '1px solid #DDD', borderRadius: 4 }}>
-                <h4 style={{ margin: '0 0 8px 0', fontSize: 14, fontWeight: 800 }}>💬 Developer Forum</h4>
+                <h4 style={{ margin: '0 0 8px 0', fontSize: 14, fontWeight: 800 }}>💬 Community</h4>
                 <ul style={{ margin: 0, paddingLeft: 18, fontSize: 13, lineHeight: 1.6 }}>
                   {forumRules.map((r) => (
                     <li key={r.actionKey}>

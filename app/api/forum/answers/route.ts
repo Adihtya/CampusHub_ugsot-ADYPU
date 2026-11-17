@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createForumAnswer } from '@/lib/db/forum';
+import { createForumAnswer } from '@/lib/db/community';
 
 export async function POST(request: Request) {
   try {

@@ -244,7 +244,7 @@ export default function NotificationsView({
                 checked={preferences.notifyForum}
                 onChange={() => handleTogglePref('notifyForum')}
               />
-              💬 Forum Answers & Accepts
+              💬 Community Answers & Accepts
             </label>
 
             <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>

@@ -131,7 +131,7 @@ export default function GlobalSearchModal({ isOpen, onClose }: Props) {
             type="text"
             value={query}
             onChange={handleInputChange}
-            placeholder="Search projects, forum questions, events, opportunities, students..."
+            placeholder="Search projects, community posts, events, opportunities, students..."
             style={{
               width: '100%',
               border: 'none',
@@ -189,7 +189,7 @@ export default function GlobalSearchModal({ isOpen, onClose }: Props) {
                 { id: 'all', label: `All (${results.totalCount})` },
                 { id: 'events', label: `Events (${results.events.length})` },
                 { id: 'projects', label: `Projects (${results.projects.length})` },
-                { id: 'forum', label: `Forum (${results.forum.length})` },
+                { id: 'forum', label: `Community (${results.forum.length})` },
                 { id: 'opportunities', label: `Opps (${results.opportunities.length})` },
                 { id: 'students', label: `Students (${results.students.length})` },
               ] as const
@@ -321,7 +321,7 @@ export default function GlobalSearchModal({ isOpen, onClose }: Props) {
               {(activeTab === 'all' || activeTab === 'forum') && results.forum.length > 0 && (
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', color: '#666', marginBottom: 8 }}>
-                    💬 Developer Forum ({results.forum.length})
+                    💬 Community ({results.forum.length})
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {results.forum.map((post) => (

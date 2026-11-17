@@ -78,7 +78,10 @@ export const FORUM_TAGS = [
 ] as const;
 
 export type ForumTag = (typeof FORUM_TAGS)[number];
+export type CommunityTag = ForumTag;
+export const COMMUNITY_TAGS = FORUM_TAGS;
 export type ForumPostType = 'question' | 'discussion' | 'announcement';
+export type CommunityPostType = ForumPostType;
 
 export type ForumPost = {
   id: string;
@@ -99,6 +102,8 @@ export type ForumPost = {
   canDelete: boolean;
 };
 
+export type CommunityPost = ForumPost;
+
 export type ForumAnswer = {
   id: string;
   postId: string;
@@ -115,6 +120,8 @@ export type ForumAnswer = {
   canDelete: boolean;
   canAccept: boolean;
 };
+
+export type CommunityAnswer = ForumAnswer;
 
 export type Project = {
   id: string;

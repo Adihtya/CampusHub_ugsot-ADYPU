@@ -4,10 +4,10 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { CurrentUser } from '@/lib/auth';
 import {
-  FORUM_TAGS,
-  type ForumAnswer,
-  type ForumPost,
-  type ForumPostType,
+  COMMUNITY_TAGS,
+  type CommunityAnswer,
+  type CommunityPost,
+  type CommunityPostType,
 } from '@/lib/types';
 import Card from './ui/Card';
 import Tag from './ui/Tag';
@@ -15,21 +15,21 @@ import { timeAgo } from '@/lib/dates';
 import { ArrowUp, Bubble } from './icons';
 
 type Props = {
-  initialPosts: ForumPost[];
+  initialPosts: CommunityPost[];
   currentUser: CurrentUser | null;
 };
 
-const TABS: { type: ForumPostType; label: string }[] = [
+const TABS: { type: CommunityPostType; label: string }[] = [
   { type: 'question', label: 'Questions' },
   { type: 'discussion', label: 'Discussions' },
   { type: 'announcement', label: 'Announcements' },
 ];
 
-export default function ForumView({ initialPosts, currentUser }: Props) {
-  const [activeTab, setActiveTab] = useState<ForumPostType>('question');
+export default function CommunityView({ initialPosts, currentUser }: Props) {
+  const [activeTab, setActiveTab] = useState<CommunityPostType>('question');
   const [selectedTag, setSelectedTag] = useState<string>('All');
   const [search, setSearch] = useState('');
-  const [posts, setPosts] = useState<ForumPost[]>(initialPosts);
+  const [posts, setPosts] = useState<CommunityPost[]>(initialPosts);
 
   // Composer state
   const [showComposer, setShowComposer] = useState(false);
@@ -41,7 +41,7 @@ export default function ForumView({ initialPosts, currentUser }: Props) {
 
   // Expanded post thread state
   const [expandedPostId, setExpandedPostId] = useState<string | null>(null);
-  const [answersMap, setAnswersMap] = useState<Record<string, ForumAnswer[]>>({});
+  const [answersMap, setAnswersMap] = useState<Record<string, CommunityAnswer[]>>({});
   const [loadingAnswers, setLoadingAnswers] = useState<Record<string, boolean>>({});
   const [replyDrafts, setReplyDrafts] = useState<Record<string, string>>({});
   const [submittingReply, setSubmittingReply] = useState<Record<string, boolean>>({});
@@ -112,7 +112,7 @@ export default function ForumView({ initialPosts, currentUser }: Props) {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to submit post');
 
-      const newPost: ForumPost = {
+      const newPost: CommunityPost = {
         id: data.postId || `post-${Date.now()}`,
         type: activeTab,
         title: draftTitle.trim(),
@@ -226,7 +226,7 @@ export default function ForumView({ initialPosts, currentUser }: Props) {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to submit answer');
 
-      const newAnswer: ForumAnswer = {
+      const newAnswer: CommunityAnswer = {
         id: data.answerId || `ans-${Date.now()}`,
         postId,
         authorId: currentUser?.id || 'me',
@@ -294,12 +294,12 @@ export default function ForumView({ initialPosts, currentUser }: Props) {
   }
 
   return (
-    <div className="forum-view" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      {/* Forum Primary Tabs */}
+    <div className="community-view" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* Community Primary Tabs */}
       <div
         className="segmented"
         role="tablist"
-        aria-label="Forum categories"
+        aria-label="Community categories"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
@@ -386,7 +386,7 @@ export default function ForumView({ initialPosts, currentUser }: Props) {
         {/* Tags filter row */}
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
           <span style={{ fontSize: 13, fontWeight: 700, marginRight: 4 }}>Tags:</span>
-          {['All', ...FORUM_TAGS].map((t) => {
+          {['All', ...COMMUNITY_TAGS].map((t) => {
             const on = selectedTag === t;
             return (
               <button
@@ -447,7 +447,7 @@ export default function ForumView({ initialPosts, currentUser }: Props) {
           <div>
             <label className="field__label">Select Tags</label>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {FORUM_TAGS.map((tag) => {
+              {COMMUNITY_TAGS.map((tag) => {
                 const selected = draftTags.includes(tag);
                 return (
                   <button

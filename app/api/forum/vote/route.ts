@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { toggleUpvote } from '@/lib/db/forum';
+import { toggleUpvote } from '@/lib/db/community';
 
 export async function POST(request: Request) {
   try {

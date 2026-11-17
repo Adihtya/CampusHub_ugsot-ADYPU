@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { acceptAnswer, deleteForumAnswer } from '@/lib/db/forum';
+import { acceptAnswer, deleteForumAnswer } from '@/lib/db/community';
 
 type RouteContext = { params: Promise<{ id: string }> };
 
