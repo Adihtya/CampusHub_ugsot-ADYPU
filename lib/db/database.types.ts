@@ -292,6 +292,92 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['project_collaborations']['Insert']>;
         Relationships: [];
       };
+      mentor_profiles: {
+        Row: {
+          id: string;
+          user_id: string;
+          bio: string;
+          skills: string[];
+          areas: string[];
+          availability_slots: string[];
+          status: 'pending' | 'approved' | 'rejected';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          bio: string;
+          skills?: string[];
+          areas?: string[];
+          availability_slots?: string[];
+          status?: 'pending' | 'approved' | 'rejected';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['mentor_profiles']['Insert']>;
+        Relationships: [];
+      };
+      mentorship_sessions: {
+        Row: {
+          id: string;
+          mentor_id: string;
+          mentee_id: string;
+          slot: string;
+          date: string;
+          topic: string;
+          notes: string;
+          status: 'pending' | 'accepted' | 'declined' | 'completed' | 'cancelled';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          mentor_id: string;
+          mentee_id: string;
+          slot: string;
+          date: string;
+          topic: string;
+          notes?: string;
+          status?: 'pending' | 'accepted' | 'declined' | 'completed' | 'cancelled';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['mentorship_sessions']['Insert']>;
+        Relationships: [];
+      };
+      code_reviews: {
+        Row: {
+          id: string;
+          requester_id: string;
+          title: string;
+          github_url: string | null;
+          code_snippet: string | null;
+          language: string;
+          notes: string;
+          mentor_id: string | null;
+          feedback: string | null;
+          status: 'open' | 'claimed' | 'reviewed' | 'resolved';
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          requester_id: string;
+          title: string;
+          github_url?: string | null;
+          code_snippet?: string | null;
+          language?: string;
+          notes: string;
+          mentor_id?: string | null;
+          feedback?: string | null;
+          status?: 'open' | 'claimed' | 'reviewed' | 'resolved';
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['code_reviews']['Insert']>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

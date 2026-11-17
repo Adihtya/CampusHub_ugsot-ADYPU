@@ -170,6 +170,52 @@ export type GitHubRepoStats = {
   updatedAt: string;
 };
 
+export type MentorProfile = {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  bio: string;
+  skills: string[];
+  areas: string[];
+  availabilitySlots: string[];
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+};
+
+export type MentorshipSession = {
+  id: string;
+  mentorId: string;
+  mentorName: string;
+  mentorEmail: string;
+  menteeId: string;
+  menteeName: string;
+  menteeEmail: string;
+  slot: string;
+  date: string;
+  topic: string;
+  notes: string;
+  status: 'pending' | 'accepted' | 'declined' | 'completed' | 'cancelled';
+  createdAt: string;
+};
+
+export type CodeReview = {
+  id: string;
+  requesterId: string;
+  requesterName: string;
+  requesterEmail: string;
+  title: string;
+  githubUrl: string | null;
+  codeSnippet: string | null;
+  language: string;
+  notes: string;
+  mentorId: string | null;
+  mentorName: string | null;
+  feedback: string | null;
+  status: 'open' | 'claimed' | 'reviewed' | 'resolved';
+  createdAt: string;
+};
+
 export interface Post {
   id: string;
   tag: PostTag;
