@@ -5,6 +5,10 @@ export type CurrentUser = {
   name: string;
   email: string;
   role: 'student' | 'organizer';
+  githubUsername?: string | null;
+  skills?: string[];
+  bio?: string | null;
+  courseYear?: string | null;
 };
 
 export class AuthServiceError extends Error {
@@ -81,7 +85,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
 
   const { data: profile, error } = await supabase
     .from('profiles')
-    .select('full_name, role')
+    .select('full_name, role, github_username, skills, bio, course_year')
     .eq('id', authData.user.id)
     .maybeSingle();
   if (error) {
@@ -94,5 +98,9 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     name: typeof name === 'string' && name.trim() ? name : authData.user.email.split('@')[0],
     email: authData.user.email,
     role: profile?.role ?? 'student',
+    githubUsername: profile?.github_username || null,
+    skills: profile?.skills ?? [],
+    bio: profile?.bio || null,
+    courseYear: profile?.course_year || null,
   };
 }

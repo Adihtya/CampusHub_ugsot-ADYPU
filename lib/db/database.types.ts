@@ -36,6 +36,9 @@ export type Database = {
           full_name: string;
           course_year: string | null;
           role: 'student' | 'organizer';
+          github_username: string | null;
+          skills: string[] | null;
+          bio: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -45,6 +48,9 @@ export type Database = {
           full_name: string;
           course_year?: string | null;
           role?: 'student' | 'organizer';
+          github_username?: string | null;
+          skills?: string[] | null;
+          bio?: string | null;
           created_at?: string;
           updated_at?: string;
         };
