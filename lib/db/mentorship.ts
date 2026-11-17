@@ -46,7 +46,7 @@ const SAMPLE_REVIEWS: CodeReview[] = [
     id: 'sample-rev-1',
     requesterId: 'student-1',
     requesterName: 'Aarav Patil',
-    requesterEmail: 'aarav@adypu.edu.in',
+    requesterEmail: 'student@adypu.edu.in',
     title: 'Review my custom debounce and throttle hook in React 19',
     githubUrl: 'https://github.com/campus-hub/hooks-library',
     codeSnippet: `function useDebounce<T>(value: T, delay: number): T {

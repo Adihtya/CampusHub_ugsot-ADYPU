@@ -34,6 +34,29 @@ type Props = {
   initialGithubUsername?: string | null;
 };
 
+function computeCompleteness(p: {
+  name?: string;
+  year?: string;
+  skills?: string[];
+  bio?: string;
+  github?: string | null;
+  links?: Record<string, string | undefined>;
+}): number {
+  let score = 0;
+  if (p.name?.trim()) score += 20;
+  if (p.year?.trim()) score += 15;
+  if (Array.isArray(p.skills) && p.skills.length > 0) score += 20;
+  if (p.bio?.trim()) score += 20;
+  if (p.github?.trim()) score += 15;
+  const hasSocial = Boolean(
+    (p.links?.linkedin && !p.links.linkedin.includes('[')) ||
+    (p.links?.x && !p.links.x.includes('[')) ||
+    (p.links?.portfolio && !p.links.portfolio.includes('['))
+  );
+  if (hasSocial) score += 10;
+  return Math.min(100, score);
+}
+
 export default function ProfileView({
   student,
   isOwn,
@@ -54,6 +77,15 @@ export default function ProfileView({
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const completeness = computeCompleteness({
+    name: profile.name,
+    year: profile.year,
+    skills: profile.skills,
+    bio: profile.bio,
+    github: githubUsername || profile.links.github,
+    links: profile.links,
+  });
   const going = profile.going.map(getEvent).filter((event) => event !== undefined);
   const registeredEvents = registrations.flatMap((registration) => {
     const event = getEvent(registration.eventId);
@@ -256,10 +288,10 @@ export default function ProfileView({
               <Card className="profile-completeness">
                 <div className="progress-head">
                   <span>Profile completeness</span>
-                  <span className="progress-head__value">{profile.profileCompleteness}%</span>
+                  <span className="progress-head__value">{completeness}%</span>
                 </div>
-                <div className="progress" role="progressbar" aria-valuenow={profile.profileCompleteness} aria-valuemin={0} aria-valuemax={100} aria-label="Profile completeness">
-                  <div className="progress__bar" style={{ width: `${profile.profileCompleteness}%` }} />
+                <div className="progress" role="progressbar" aria-valuenow={completeness} aria-valuemin={0} aria-valuemax={100} aria-label="Profile completeness">
+                  <div className="progress__bar" style={{ width: `${completeness}%` }} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 6, flexWrap: 'wrap', gap: 6 }}>
                   <p className="muted-note" style={{ margin: 0 }}>Add skills, interests, and projects to hit 100%. Only you can see this.</p>

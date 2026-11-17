@@ -4,7 +4,7 @@
  */
 import type { CampusEvent, Highlight, Post, Student } from './types';
 
-export const CURRENT_USER_ID = 'aarav';
+export const CURRENT_USER_ID = 'student-dev';
 
 export const events: CampusEvent[] = [
   { id: 'freshers-talk', title: 'Freshers’ tech talk', type: 'event', category: 'Meetup', mode: 'Offline', where: 'In campus', place: 'Seminar Hall, Block A', start: '2026-10-17', registrationDeadline: '2026-10-16', capacity: 120, registerUrl: '#' },
@@ -16,12 +16,12 @@ export const events: CampusEvent[] = [
   { id: 'rapid-prototyping-workshop', title: 'Rapid Prototyping Workshop', type: 'event', category: 'Workshop', mode: 'Offline', where: 'In campus', place: 'Innovation Lab', start: '2026-11-14', registrationDeadline: '2026-11-13', capacity: 30, registerUrl: '#' },
   { id: 'student-maker-meetup', title: 'Student Maker Meetup', type: 'event', category: 'Meetup', mode: 'Offline', where: 'In campus', place: 'Project Studio', start: '2026-11-14', end: '2026-11-15', registrationDeadline: '2026-11-13', capacity: 50, registerUrl: '#' },
   { id: 'ml-circle', title: 'ML Paper Reading Circle', type: 'event', category: 'Meetup', mode: 'Offline', where: 'In campus', place: 'Library, Room 2', start: '2026-11-18', registrationDeadline: '2026-11-17', capacity: 25, registerUrl: '#' },
-  { id: 'codefest', title: 'Inter-college Codefest', type: 'event', category: 'Contest', mode: 'Offline', where: 'Out of campus', place: '[Host college, city]', start: '2026-11-21', registrationDeadline: '2026-11-15', capacity: 200, registerUrl: '#' },
+  { id: 'codefest', title: 'Inter-college Codefest', type: 'event', category: 'Contest', mode: 'Offline', where: 'Out of campus', place: 'Pune Tech Campus Auditorium, Pune', start: '2026-11-21', registrationDeadline: '2026-11-15', capacity: 200, registerUrl: '#' },
   { id: 'resume-clinic', title: 'Resume & LinkedIn clinic', type: 'event', category: 'Workshop', mode: 'Offline', where: 'In campus', place: 'Placement Cell', start: '2026-11-25', registrationDeadline: '2026-11-24', capacity: 40, registerUrl: '#' },
   { id: 'global-ai-hackathon', title: 'Global AI Hackathon', type: 'hackathon', category: 'Hackathon', mode: 'Online', where: 'Out of campus', place: 'Online', start: '2026-11-27', end: '2026-11-29', registrationDeadline: '2026-11-20', capacity: 200, teamSizeMin: 1, teamSizeMax: 4, theme: 'To be announced', prize: 'To be announced', rules: [], registerUrl: '#' },
 ];
 
-const links = { linkedin: 'linkedin.com/in/[username]', github: 'github.com/[username]', x: 'x.com/[username]', portfolio: '[yourportfolio.dev]' };
+const links = { linkedin: '', github: 'github.com/campus-hub', x: '', portfolio: '' };
 
 export const students: Student[] = [
   {

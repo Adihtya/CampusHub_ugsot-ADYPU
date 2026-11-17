@@ -2,6 +2,8 @@ import 'server-only';
 import { createSupabaseServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
 import { getCurrentUser } from '@/lib/auth';
 import { getUserLeaderboardPosition } from '@/lib/db/leaderboard';
+import type { Student } from '@/lib/types';
+import { students, getStudent } from '@/lib/data';
 
 export type ActivityMonth = {
   month: string; // e.g. 'Nov 2026'
@@ -387,5 +389,143 @@ export async function updateUserProfile(data: {
       return;
     }
     throw new Error(`Failed to update profile: ${error.message}`);
+  }
+}
+
+/**
+ * Dynamic profile completeness calculator:
+ * Name (+20), Course/Year (+15), Skills (+20), Bio (+20), GitHub (+15), Social links (+10) = 100%
+ */
+export function calculateProfileCompleteness(profile: {
+  name?: string | null;
+  year?: string | null;
+  courseYear?: string | null;
+  skills?: string[] | null;
+  bio?: string | null;
+  githubUsername?: string | null;
+  links?: { linkedin?: string; github?: string; x?: string; portfolio?: string } | null;
+}): number {
+  let score = 0;
+  if (profile.name?.trim()) score += 20;
+  if (profile.year?.trim() || profile.courseYear?.trim()) score += 15;
+  if (Array.isArray(profile.skills) && profile.skills.length > 0) score += 20;
+  if (profile.bio?.trim()) score += 20;
+  if (profile.githubUsername?.trim() || (profile.links?.github && !profile.links.github.includes('['))) score += 15;
+  const hasSocial = Boolean(
+    (profile.links?.linkedin && !profile.links.linkedin.includes('[')) ||
+    (profile.links?.x && !profile.links.x.includes('[')) ||
+    (profile.links?.portfolio && !profile.links.portfolio.includes('['))
+  );
+  if (hasSocial) score += 10;
+  return Math.min(100, score);
+}
+
+/**
+ * Fetch all visible students from Supabase (respecting privacy flags).
+ */
+export async function getPublicStudents(): Promise<Student[]> {
+  if (!isSupabaseConfigured()) {
+    return students;
+  }
+
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, full_name, email, course_year, bio, skills, github_username, is_profile_private')
+      .neq('is_profile_private', true);
+
+    if (error || !data || data.length === 0) {
+      return students;
+    }
+
+    return data.map((p) => {
+      const handle = p.email ? p.email.split('@')[0] : p.id.slice(0, 8);
+      const studentSkills = Array.isArray(p.skills) && p.skills.length > 0 ? p.skills : ['React', 'TypeScript', 'Git'];
+      const studentLinks = {
+        linkedin: '',
+        github: p.github_username ? `github.com/${p.github_username}` : '',
+        x: '',
+        portfolio: '',
+      };
+      return {
+        id: p.id,
+        name: p.full_name || 'Campus Student',
+        handle,
+        branch: p.course_year ? p.course_year.split(' ')[0] : 'CSE',
+        year: p.course_year || '3rd year',
+        bio: p.bio || 'Student at UGSOT ADYPU learning, building, and contributing in the open.',
+        skills: studentSkills,
+        lookingForTeam: true,
+        links: studentLinks,
+        achievements: [],
+        going: [],
+        profileCompleteness: calculateProfileCompleteness({
+          name: p.full_name,
+          courseYear: p.course_year,
+          bio: p.bio,
+          skills: studentSkills,
+          githubUsername: p.github_username,
+          links: studentLinks,
+        }),
+      };
+    });
+  } catch {
+    return students;
+  }
+}
+
+/**
+ * Fetch a single public student profile by ID or handle.
+ */
+export async function getPublicStudentById(id: string): Promise<Student | null> {
+  if (!isSupabaseConfigured()) {
+    return getStudent(id) || null;
+  }
+
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data: p } = await supabase
+      .from('profiles')
+      .select('id, full_name, email, course_year, bio, skills, github_username, is_profile_private')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (p) {
+      if (p.is_profile_private) return null;
+      const handle = p.email ? p.email.split('@')[0] : p.id.slice(0, 8);
+      const studentSkills = Array.isArray(p.skills) && p.skills.length > 0 ? p.skills : ['React', 'TypeScript', 'Git'];
+      const studentLinks = {
+        linkedin: '',
+        github: p.github_username ? `github.com/${p.github_username}` : '',
+        x: '',
+        portfolio: '',
+      };
+      return {
+        id: p.id,
+        name: p.full_name || 'Campus Student',
+        handle,
+        branch: p.course_year ? p.course_year.split(' ')[0] : 'CSE',
+        year: p.course_year || '3rd year',
+        bio: p.bio || 'Student at UGSOT ADYPU learning, building, and contributing in the open.',
+        skills: studentSkills,
+        lookingForTeam: true,
+        links: studentLinks,
+        achievements: [],
+        going: [],
+        profileCompleteness: calculateProfileCompleteness({
+          name: p.full_name,
+          courseYear: p.course_year,
+          bio: p.bio,
+          skills: studentSkills,
+          githubUsername: p.github_username,
+          links: studentLinks,
+        }),
+      };
+    }
+
+    return getStudent(id) || null;
+  } catch {
+    return getStudent(id) || null;
   }
 }
