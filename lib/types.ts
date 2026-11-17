@@ -228,3 +228,39 @@ export interface Post {
   replies: number;
   eventId?: string;
 }
+
+export const OPPORTUNITY_CATEGORIES = [
+  'All',
+  'Internships',
+  'Open-source programs',
+  'Hackathons',
+  'Fellowships',
+  'Competitions',
+  'Research',
+] as const;
+
+export type OpportunityCategory =
+  | 'Internships'
+  | 'Open-source programs'
+  | 'Hackathons'
+  | 'Fellowships'
+  | 'Competitions'
+  | 'Research';
+
+export interface Opportunity {
+  id: string;
+  title: string;
+  organization: string;
+  category: OpportunityCategory;
+  description: string;
+  link: string;
+  deadline: string; // ISO string
+  location: string;
+  eligibility: string;
+  creatorId?: string | null;
+  isBookmarked?: boolean;
+  isFromEvents?: boolean;
+  eventUrl?: string;
+  isClosingSoon?: boolean;
+  createdAt: string;
+}

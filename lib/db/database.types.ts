@@ -378,6 +378,52 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['code_reviews']['Insert']>;
         Relationships: [];
       };
+      opportunities: {
+        Row: {
+          id: string;
+          creator_id: string | null;
+          title: string;
+          organization: string;
+          category: 'Internships' | 'Open-source programs' | 'Hackathons' | 'Fellowships' | 'Competitions' | 'Research';
+          description: string;
+          link: string;
+          deadline: string;
+          location: string;
+          eligibility: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          creator_id?: string | null;
+          title: string;
+          organization: string;
+          category: 'Internships' | 'Open-source programs' | 'Hackathons' | 'Fellowships' | 'Competitions' | 'Research';
+          description: string;
+          link: string;
+          deadline: string;
+          location?: string;
+          eligibility?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['opportunities']['Insert']>;
+        Relationships: [];
+      };
+      opportunity_bookmarks: {
+        Row: {
+          user_id: string;
+          opportunity_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          opportunity_id: string;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['opportunity_bookmarks']['Insert']>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
