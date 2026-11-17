@@ -423,7 +423,7 @@ export default function MentorshipView({
           </div>
 
           {/* Mentors Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 18 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: 18 }}>
             {filteredMentors.map((mentor) => (
               <article key={mentor.id} className="card" style={{ padding: 22, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: 14 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

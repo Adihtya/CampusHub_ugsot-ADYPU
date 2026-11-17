@@ -207,4 +207,7 @@ button.day:hover, .day[aria-pressed='true'] { background: var(--primary); color:
   .calendar__selected-event { align-items: flex-start; flex-direction: column; gap: 4px; }
   .filters__end { margin-left: 0; }
   .fab { display: none !important; }
+  .podium-rank-1 { order: 1 !important; }
+  .podium-rank-2 { order: 2 !important; }
+  .podium-rank-3 { order: 3 !important; }
 }

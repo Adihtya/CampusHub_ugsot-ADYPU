@@ -371,7 +371,7 @@ export default function ProjectList({ initialProjects, currentUser }: Props) {
           <p style={{ margin: 0, opacity: 0.8 }}>Try adjusting your search or clear filters to see all projects.</p>
         </Card>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 18 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: 18 }}>
           {filteredProjects.map((proj) => (
             <article
               key={proj.id}

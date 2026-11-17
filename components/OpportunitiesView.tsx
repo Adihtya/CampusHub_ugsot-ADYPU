@@ -643,7 +643,7 @@ export default function OpportunitiesView({ initialOpportunities, currentUser }:
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
                 <div>
                   <label style={{ display: 'block', fontWeight: 700, fontSize: 13, marginBottom: 4 }}>
                     Organization / Company *
@@ -707,7 +707,7 @@ export default function OpportunitiesView({ initialOpportunities, currentUser }:
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
                 <div>
                   <label style={{ display: 'block', fontWeight: 700, fontSize: 13, marginBottom: 4 }}>
                     Application Link *
@@ -745,7 +745,7 @@ export default function OpportunitiesView({ initialOpportunities, currentUser }:
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
                 <div>
                   <label style={{ display: 'block', fontWeight: 700, fontSize: 13, marginBottom: 4 }}>
                     Location / Mode

@@ -450,6 +450,7 @@ export default function LeaderboardView({
         >
           {/* Rank 2 (Silver) */}
           <div
+            className="podium-col podium-rank-2"
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -527,6 +528,7 @@ export default function LeaderboardView({
 
           {/* Rank 1 (Gold - Tallest) */}
           <div
+            className="podium-col podium-rank-1"
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -606,6 +608,7 @@ export default function LeaderboardView({
 
           {/* Rank 3 (Bronze) */}
           <div
+            className="podium-col podium-rank-3"
             style={{
               display: 'flex',
               flexDirection: 'column',
