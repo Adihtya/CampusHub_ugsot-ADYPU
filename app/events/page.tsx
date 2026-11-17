@@ -28,6 +28,7 @@ export default async function EventsPage() {
         sub="Find something to learn, build, or compete in. Pick a view and make a plan."
       />
       <EventsBrowser events={events} today={todayISO()} signedIn={Boolean(currentUser)}
+        isOrganizer={currentUser?.role === 'organizer'}
         statuses={statuses} registrationUnavailable={registrationUnavailable} />
     </main>
   );

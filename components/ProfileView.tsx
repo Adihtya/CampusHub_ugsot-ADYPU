@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, type FormEvent } from 'react';
 import type { Student } from '@/lib/types';
-import type { MyEventRegistration } from '@/lib/db/events';
+import type { MyEventRegistration, UserCertificate } from '@/lib/db/events';
 import { typeColors } from '@/lib/colors';
 import { dayRange, MONTHS_SHORT, parseDate } from '@/lib/dates';
 import { getEvent } from '@/lib/data';
@@ -26,6 +26,7 @@ type Props = {
   isOwn: boolean;
   registrations?: MyEventRegistration[];
   registrationsError?: string;
+  certificates?: UserCertificate[];
 };
 
 export default function ProfileView({
@@ -33,6 +34,7 @@ export default function ProfileView({
   isOwn,
   registrations = [],
   registrationsError = '',
+  certificates = [],
 }: Props) {
   const [profile, setProfile] = useState(student);
   const [editing, setEditing] = useState(false);
@@ -171,6 +173,54 @@ export default function ProfileView({
             </div>
           )) : <p className="empty-note">No achievements added yet. Your next win starts here.</p>}
         </Card>
+
+        {isOwn && (
+          <Card aria-labelledby="certificates-title" className="profile-section">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 id="certificates-title" className="card__title">My certificates ({certificates.length})</h2>
+              <Link href="/verify" style={{ fontSize: 13, textDecoration: 'underline' }}>
+                Verify a certificate →
+              </Link>
+            </div>
+            {certificates.length ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 12 }}>
+                {certificates.map((cert) => (
+                  <div
+                    key={cert.id}
+                    className="going-row"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      background: '#fef9c3',
+                      border: '2px solid var(--ink)',
+                      borderRadius: 'var(--radius)',
+                      padding: '10px 14px',
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: 15 }}>🎓 {cert.eventTitle}</div>
+                      <div style={{ fontSize: 12, opacity: 0.75 }}>
+                        Issued {new Date(cert.issuedAt).toLocaleDateString()} · ID: {cert.id.slice(0, 8)}…
+                      </div>
+                    </div>
+                    <Link
+                      href={`/certificates/${cert.id}`}
+                      className="btn btn--primary"
+                      style={{ fontSize: 12, padding: '4px 10px', minHeight: 32 }}
+                    >
+                      View & Print
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="empty-note">
+                No certificates earned yet. Attend events and get marked present by the organizer to receive your official certificate!
+              </p>
+            )}
+          </Card>
+        )}
 
         {isOwn ? (
           <Card aria-labelledby="registrations-title" className="profile-section">

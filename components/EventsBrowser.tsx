@@ -22,6 +22,7 @@ type Props = {
   signedIn: boolean;
   statuses: EventRegistrationStatus[];
   registrationUnavailable: boolean;
+  isOrganizer?: boolean;
 };
 
 export default function EventsBrowser({
@@ -30,6 +31,7 @@ export default function EventsBrowser({
   signedIn,
   statuses,
   registrationUnavailable,
+  isOrganizer,
 }: Props) {
   const [mode, setMode] = useState<(typeof MODES)[number]>('All');
   const [where, setWhere] = useState<(typeof WHERE)[number]>('All');
@@ -92,8 +94,19 @@ export default function EventsBrowser({
                     <span className="chip chip--deadline">
                       Closes {formatShort(statusesByEvent.get(e.id)?.registrationDeadline ?? e.registrationDeadline)}
                     </span>
-                    <EventRegistrationControl event={e} status={statusesByEvent.get(e.id)}
-                      signedIn={signedIn} unavailable={registrationUnavailable} />
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                      {isOrganizer && (
+                        <Link
+                          href={`/events/${e.id}/attendance`}
+                          className="btn btn--ghost"
+                          style={{ fontSize: 13, padding: '6px 12px', minHeight: 36 }}
+                        >
+                          📋 Attendance
+                        </Link>
+                      )}
+                      <EventRegistrationControl event={e} status={statusesByEvent.get(e.id)}
+                        signedIn={signedIn} unavailable={registrationUnavailable} />
+                    </div>
                   </div>
                 </article>
               ))}

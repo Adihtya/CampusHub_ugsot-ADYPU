@@ -51,6 +51,24 @@ export async function signOut() {
   if (error) throw new AuthServiceError('We couldn’t sign you out. Please try again.', 500);
 }
 
+export async function requestPasswordReset(email: string, redirectTo?: string) {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+    redirectTo,
+  });
+  if (error) {
+    throw new AuthServiceError('We couldn’t send reset instructions. Check the email and try again.', 400);
+  }
+}
+
+export async function updatePassword(password: string) {
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) {
+    throw new AuthServiceError('We couldn’t update your password. Please try again.', 400);
+  }
+}
+
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   if (!isSupabaseConfigured()) return null;
   const supabase = await createSupabaseServerClient();
@@ -66,9 +84,11 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     .select('full_name, role')
     .eq('id', authData.user.id)
     .maybeSingle();
-  if (error) throw new Error(`Unable to load the signed-in profile: ${error.message}`);
+  if (error) {
+    console.warn(`Unable to load the signed-in profile: ${error.message}`);
+  }
 
-  const name = profile?.full_name || authData.user.user_metadata.full_name;
+  const name = profile?.full_name || authData.user.user_metadata?.full_name;
   return {
     id: authData.user.id,
     name: typeof name === 'string' && name.trim() ? name : authData.user.email.split('@')[0],

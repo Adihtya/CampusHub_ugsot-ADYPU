@@ -63,6 +63,35 @@ export default async function HackathonPage({ params }: Props) {
         highlight={event.title}
         sub={`${event.category} · ${event.mode} · ${event.where} · ${event.place}`}
       />
+      {currentUser?.role === 'organizer' && (
+        <section
+          className="card"
+          style={{
+            marginBottom: 20,
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 12,
+            background: 'var(--card)',
+            border: '2px solid var(--accent)',
+          }}
+        >
+          <div>
+            <span className="eyebrow" style={{ color: 'var(--accent)', fontWeight: 700 }}>
+              Organizer Tools
+            </span>
+            <h3 style={{ margin: '2px 0 0', fontSize: 18 }}>Attendance & Check-in</h3>
+          </div>
+          <Link
+            href={`/events/${eventId}/attendance`}
+            className="btn btn--primary"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+          >
+            <span>📋</span> Take Attendance & Roll Call
+          </Link>
+        </section>
+      )}
       {dataError && <p className="form-error" role="alert">{dataError}</p>}
 
       <section className="card hackathon-overview" aria-labelledby="hackathon-overview-title">

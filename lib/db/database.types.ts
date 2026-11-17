@@ -161,6 +161,21 @@ export type Database = {
         Args: { p_event_id: string; p_name: string; p_member_emails: string[] };
         Returns: string;
       };
+      verify_certificate: {
+        Args: { p_certificate_id: string };
+        Returns: {
+          certificate_id: string;
+          event_id: string;
+          event_title: string;
+          attendee_name: string;
+          issued_at: string;
+          is_valid: boolean;
+        }[];
+      };
+      issue_event_certificate: {
+        Args: { p_event_id: string; p_user_id: string };
+        Returns: string;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

@@ -2,6 +2,8 @@ import 'server-only';
 import type { User } from '@supabase/supabase-js';
 import type { Database } from '@/lib/db/database.types';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getEvent } from '@/lib/data';
+import type { CampusEvent } from '@/lib/types';
 
 export type EventRegistration = {
   id: string;
@@ -751,6 +753,251 @@ export async function isEventOrganizer(email?: string): Promise<boolean> {
     .maybeSingle();
   throwOnError(error, 'check organizer permissions');
   return data?.role === 'organizer';
+}
+
+export type EventAttendanceRecord = {
+  userId: string;
+  email: string;
+  name: string;
+  courseYear: string | null;
+  registeredAt: string;
+  status: 'present' | 'absent';
+  updatedAt: string | null;
+  certificateId?: string | null;
+};
+
+export type UserCertificate = {
+  id: string;
+  eventId: string;
+  eventTitle: string;
+  attendeeName: string;
+  issuedAt: string;
+};
+
+export type VerifiedCertificate = {
+  certificateId: string;
+  eventId: string;
+  eventTitle: string;
+  attendeeName: string;
+  issuedAt: string;
+  isValid: boolean;
+};
+
+export async function getEventAttendanceDetails(
+  eventId: string,
+): Promise<{ event: CampusEvent; records: EventAttendanceRecord[] }> {
+  const event = getEvent(eventId);
+  if (!event) throw new EventDataError(`Event ${eventId} not found.`, 404);
+
+  const organizer = await isEventOrganizer();
+  if (!organizer) {
+    throw new EventDataError('Only organizers can view event attendance.', 403);
+  }
+
+  const supabase = await createSupabaseServerClient();
+
+  const { data: registrations, error: regError } = await supabase
+    .from('event_registrations')
+    .select('id, user_id, registered_at')
+    .eq('event_id', eventId)
+    .order('registered_at', { ascending: true });
+  throwOnError(regError, 'load event registrations');
+
+  const regRows = registrations ?? [];
+  const userIds = [...new Set(regRows.map((r) => r.user_id))];
+
+  const profilesResult = userIds.length
+    ? await supabase
+        .from('profiles')
+        .select('id, email, full_name, course_year')
+        .in('id', userIds)
+    : { data: [], error: null };
+  throwOnError(profilesResult.error, 'load registrant profiles');
+
+  const profileMap = new Map(
+    (profilesResult.data ?? []).map((p) => [p.id, p]),
+  );
+
+  const { data: attendanceList, error: attError } = await supabase
+    .from('event_attendance')
+    .select('user_id, status, updated_at')
+    .eq('event_id', eventId);
+  throwOnError(attError, 'load event attendance');
+
+  const attendanceMap = new Map(
+    (attendanceList ?? []).map((a) => [a.user_id, a]),
+  );
+
+  const { data: certList, error: certError } = await supabase
+    .from('event_certificates')
+    .select('id, user_id')
+    .eq('event_id', eventId);
+  throwOnError(certError, 'load event certificates');
+
+  const certMap = new Map((certList ?? []).map((c) => [c.user_id, c.id]));
+
+  const records: EventAttendanceRecord[] = regRows.map((reg) => {
+    const prof = profileMap.get(reg.user_id);
+    const att = attendanceMap.get(reg.user_id);
+    return {
+      userId: reg.user_id,
+      email: prof?.email ?? '',
+      name: prof?.full_name?.trim() || prof?.email?.split('@')[0] || 'Attendee',
+      courseYear: prof?.course_year ?? null,
+      registeredAt: reg.registered_at,
+      status: att?.status ?? 'absent',
+      updatedAt: att?.updated_at ?? null,
+      certificateId: certMap.get(reg.user_id) ?? null,
+    };
+  });
+
+  return { event, records };
+}
+
+export async function setAttendeeAttendance(
+  eventId: string,
+  userId: string,
+  status: 'present' | 'absent',
+): Promise<void> {
+  const organizer = await isEventOrganizer();
+  if (!organizer) {
+    throw new EventDataError('Only organizers can update event attendance.', 403);
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from('event_attendance').upsert(
+    {
+      event_id: eventId,
+      user_id: userId,
+      status,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'event_id,user_id' },
+  );
+  throwOnError(error, 'update attendee attendance');
+}
+
+export async function getMyCertificates(): Promise<UserCertificate[]> {
+  const supabase = await createSupabaseServerClient();
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData?.user) return [];
+
+  const { data, error } = await supabase
+    .from('event_certificates')
+    .select('id, event_id, issued_at')
+    .eq('user_id', authData.user.id)
+    .order('issued_at', { ascending: false });
+
+  if (error) {
+    console.error('Failed to load my certificates:', error.message);
+    return [];
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name')
+    .eq('id', authData.user.id)
+    .maybeSingle();
+
+  const attendeeName = profile?.full_name?.trim() || authData.user.email?.split('@')[0] || 'Student';
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    eventId: row.event_id,
+    eventTitle: getEvent(row.event_id)?.title || row.event_id,
+    attendeeName,
+    issuedAt: row.issued_at,
+  }));
+}
+
+export async function verifyCertificate(certificateId: string): Promise<VerifiedCertificate | null> {
+  const supabase = await createSupabaseServerClient();
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(certificateId.trim())) {
+    return null;
+  }
+
+  const { data, error } = await supabase.rpc('verify_certificate', {
+    p_certificate_id: certificateId.trim(),
+  });
+
+  if (error || !data || data.length === 0) {
+    // Fallback: direct query
+    const { data: cert, error: certErr } = await supabase
+      .from('event_certificates')
+      .select('id, event_id, user_id, issued_at')
+      .eq('id', certificateId.trim())
+      .maybeSingle();
+
+    if (certErr || !cert) return null;
+
+    const { data: prof } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', cert.user_id)
+      .maybeSingle();
+
+    return {
+      certificateId: cert.id,
+      eventId: cert.event_id,
+      eventTitle: getEvent(cert.event_id)?.title || cert.event_id,
+      attendeeName: prof?.full_name || 'Attendee',
+      issuedAt: cert.issued_at,
+      isValid: true,
+    };
+  }
+
+  const res = data[0];
+  return {
+    certificateId: res.certificate_id,
+    eventId: res.event_id,
+    eventTitle: res.event_title || getEvent(res.event_id)?.title || res.event_id,
+    attendeeName: res.attendee_name || 'Attendee',
+    issuedAt: res.issued_at,
+    isValid: res.is_valid,
+  };
+}
+
+export async function issueCertificateForAttendee(eventId: string, userId: string): Promise<string> {
+  const organizer = await isEventOrganizer();
+  if (!organizer) {
+    throw new EventDataError('Only organizers can issue certificates.', 403);
+  }
+
+  const supabase = await createSupabaseServerClient();
+
+  // Enforce attendance check
+  const { data: att } = await supabase
+    .from('event_attendance')
+    .select('status')
+    .eq('event_id', eventId)
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (att?.status !== 'present') {
+    throw new EventDataError('Cannot issue certificate: attendee is not marked present.', 400);
+  }
+
+  const { data, error } = await supabase
+    .from('event_certificates')
+    .insert({ event_id: eventId, user_id: userId })
+    .select('id')
+    .single();
+
+  if (error) {
+    // If already exists, return existing
+    const { data: existing } = await supabase
+      .from('event_certificates')
+      .select('id')
+      .eq('event_id', eventId)
+      .eq('user_id', userId)
+      .single();
+
+    if (existing) return existing.id;
+    throw new EventDataError(`Failed to issue certificate: ${error.message}`, 500);
+  }
+
+  return data.id;
 }
 
 export function subscribeToEventStore(onChange: () => void): () => void {

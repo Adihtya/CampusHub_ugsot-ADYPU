@@ -5,7 +5,7 @@ import Card from '@/components/ui/Card';
 import { getCurrentUser } from '@/lib/auth';
 import { students } from '@/lib/data';
 import type { Student } from '@/lib/types';
-import { getMyEventRegistrations, type MyEventRegistration } from '@/lib/db/events';
+import { getMyEventRegistrations, getMyCertificates, type MyEventRegistration, type UserCertificate } from '@/lib/db/events';
 
 export const metadata = { title: 'Your profile · CampusHub · UGSOT' };
 
@@ -66,6 +66,13 @@ export default async function MyProfilePage() {
     registrationsError = 'Your registrations are temporarily unavailable.';
   }
 
+  let certificates: UserCertificate[] = [];
+  try {
+    certificates = await getMyCertificates();
+  } catch (error) {
+    console.error('Unable to load certificates:', error);
+  }
+
   return (
     <main className="container page profile-page">
       <div className="profile-page__heading">
@@ -75,7 +82,7 @@ export default async function MyProfilePage() {
         <SignOutButton />
       </div>
       <ProfileView student={profileData} isOwn registrations={registrations}
-        registrationsError={registrationsError} />
+        registrationsError={registrationsError} certificates={certificates} />
     </main>
   );
 }
