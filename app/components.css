@@ -187,6 +187,10 @@ button.day:hover, .day[aria-pressed='true'] { background: var(--primary); color:
 .fab__icon { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: var(--card); font-size: 12px; font-weight: 700; }
 .fab__icon--me { background: var(--primary); color: var(--card); }
 
+@media (max-width: 768px) {
+  .fab { display: none !important; }
+}
+
 @media (max-width: 640px) {
   .calendar { padding: 18px; }
   .calendar__title { font-size: 26px; }
@@ -202,5 +206,5 @@ button.day:hover, .day[aria-pressed='true'] { background: var(--primary); color:
   .calendar--wide .day__marker { width: 5px; height: 5px; }
   .calendar__selected-event { align-items: flex-start; flex-direction: column; gap: 4px; }
   .filters__end { margin-left: 0; }
-  .fab { right: 16px; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+  .fab { display: none !important; }
 }

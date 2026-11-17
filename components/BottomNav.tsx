@@ -71,6 +71,7 @@ export default function BottomNav({ currentUser }: Props) {
               style={{
                 display: 'flex',
                 alignItems: 'center',
+                gap: 10,
                 padding: '10px 12px',
                 borderRadius: 4,
                 border: '1.5px solid transparent',
@@ -81,7 +82,8 @@ export default function BottomNav({ currentUser }: Props) {
                 backgroundColor: isActive(item.href) ? '#FFE066' : 'transparent',
               }}
             >
-              {item.label}
+              <span style={{ fontSize: 16 }}>{item.icon}</span>
+              <span>{item.label}</span>
             </Link>
           ))}
           <div style={{ borderTop: '1px solid #eee', marginTop: 4, paddingTop: 6 }}>

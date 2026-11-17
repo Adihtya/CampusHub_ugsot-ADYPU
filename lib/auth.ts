@@ -98,9 +98,9 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     name: typeof name === 'string' && name.trim() ? name : authData.user.email.split('@')[0],
     email: authData.user.email,
     role: profile?.role ?? 'student',
-    githubUsername: profile?.github_username || null,
-    skills: profile?.skills ?? [],
-    bio: profile?.bio || null,
-    courseYear: profile?.course_year || null,
+    githubUsername: profile?.github_username || authData.user.user_metadata?.github_username || null,
+    skills: profile?.skills ?? (Array.isArray(authData.user.user_metadata?.skills) ? authData.user.user_metadata.skills : []),
+    bio: profile?.bio || authData.user.user_metadata?.bio || null,
+    courseYear: profile?.course_year || authData.user.user_metadata?.course_year || null,
   };
 }

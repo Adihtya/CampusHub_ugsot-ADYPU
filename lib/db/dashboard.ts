@@ -348,6 +348,20 @@ export async function updateUserProfile(data: {
     updatePayload.bio = data.bio.trim() || null;
   }
 
+  // Also sync to auth user metadata so it persists even if DB schema cache is refreshing
+  try {
+    await supabase.auth.updateUser({
+      data: {
+        ...(updatePayload.github_username !== undefined ? { github_username: updatePayload.github_username } : {}),
+        ...(updatePayload.full_name ? { full_name: updatePayload.full_name } : {}),
+        ...(updatePayload.bio !== undefined ? { bio: updatePayload.bio } : {}),
+        ...(updatePayload.skills ? { skills: updatePayload.skills } : {}),
+      },
+    });
+  } catch {
+    // Continue if metadata sync is not supported by current session
+  }
+
   // Notice: Role is STRICTLY OMITTED so user cannot update role!
   const { error } = await supabase
     .from('profiles')
@@ -355,6 +369,23 @@ export async function updateUserProfile(data: {
     .eq('id', currentUser.id);
 
   if (error) {
+    // If the database column is missing from an unapplied migration, fallback to updating core fields
+    if (error.message.includes('column') || error.message.includes('schema cache')) {
+      const fallbackPayload: { full_name?: string; updated_at: string } = {
+        updated_at: new Date().toISOString(),
+      };
+      if (updatePayload.full_name) fallbackPayload.full_name = updatePayload.full_name;
+
+      const { error: fallbackError } = await supabase
+        .from('profiles')
+        .update(fallbackPayload)
+        .eq('id', currentUser.id);
+
+      if (fallbackError) {
+        throw new Error(`Failed to update profile: ${fallbackError.message}`);
+      }
+      return;
+    }
     throw new Error(`Failed to update profile: ${error.message}`);
   }
 }
