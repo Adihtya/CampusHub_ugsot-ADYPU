@@ -11,7 +11,7 @@ export default function NavBar() {
   return (
     <header className="site-header">
       <div className="container site-header__inner">
-        <Link href="/" className="logo">
+        <Link href="/intro" className="logo" aria-label="Open Source Club intro">
           <span aria-hidden="true" className="logo__mark">U</span>
           <span>UGSOTADYPU <span className="logo__accent">Hub</span></span>
         </Link>

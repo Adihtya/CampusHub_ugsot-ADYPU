@@ -2,16 +2,18 @@ import Link from 'next/link';
 import HomeCalendar from '@/components/HomeCalendar';
 import TeammateCard from '@/components/TeammateCard';
 import Avatar from '@/components/Avatar';
-import { getStudent, CURRENT_USER_ID, events, highlights, posts } from '@/lib/data';
+import { getStudent, events, highlights, posts } from '@/lib/data';
+import { getCurrentUser } from '@/lib/auth';
 import { typeColors, tagColors } from '@/lib/colors';
 import { eventDays, formatShort, formatWeekday, todayISO, toISO } from '@/lib/dates';
 import Card from '@/components/ui/Card';
 import Tag from '@/components/ui/Tag';
+import FeatureSuggestions from '@/components/FeatureSuggestions';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Home · CampusHub · UGSOT' };
 
-export default function HomePage() {
+export default async function HomePage() {
   const today = todayISO();
   const todayDate = new Date(`${today}T00:00:00`);
   const daysUntilSunday = (7 - todayDate.getDay()) % 7;
@@ -27,8 +29,8 @@ export default function HomePage() {
     }))
     .sort((a, b) => a.start.localeCompare(b.start));
   const latestPosts = [...posts].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 3);
-  const me = getStudent(CURRENT_USER_ID);
-  const firstName = me?.name.split(' ')[0] ?? 'there';
+  const currentUser = await getCurrentUser();
+  const firstName = currentUser?.name.split(' ')[0] ?? 'there';
 
   return (
     <main className="container page home-page">
@@ -146,6 +148,16 @@ export default function HomePage() {
         <summary>Browse the full event calendar</summary>
         <HomeCalendar events={events} today={today} />
       </details>
+
+      <section id="feature-suggestions" className="home-section" aria-labelledby="features-title">
+        <div id="we-can-make-it-happen" className="section-head">
+          <div>
+            <p className="eyebrow">Ideas & Wishlist</p>
+            <h2 id="features-title" className="section-title">We can make it happen</h2>
+          </div>
+        </div>
+        <FeatureSuggestions defaultAuthor={currentUser?.name || ''} />
+      </section>
     </main>
   );
 }

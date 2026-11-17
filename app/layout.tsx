@@ -6,10 +6,12 @@ import NavBar from '@/components/NavBar';
 import BottomNav from '@/components/BottomNav';
 import ProfileFab from '@/components/ProfileFab';
 import IntroScreen from '@/components/intro/IntroScreen';
+import { getCurrentUser } from '@/lib/auth';
 import './globals.css';
 import './components.css';
 import './phase2.css';
 import './intro.css';
+import './auth.css';
 
 const dmSans = DM_Sans({ variable: '--font-dm-sans', subsets: ['latin'] });
 const spaceGrotesk = Space_Grotesk({ variable: '--font-space-grotesk', subsets: ['latin'] });
@@ -19,9 +21,10 @@ export const metadata: Metadata = {
   description: 'Events, people and conversations on campus, all in one place.',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const currentUser = await getCurrentUser();
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-intro-seen={currentUser ? 'true' : undefined}>
       <body className={`${dmSans.variable} ${spaceGrotesk.variable}`}>
         <Script id="intro-session-check" strategy="beforeInteractive">
           {`try {
@@ -40,7 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <ProfileFab />
           <BottomNav />
         </div>
-        <IntroScreen />
+        <IntroScreen signedIn={!!currentUser} />
       </body>
     </html>
   );
