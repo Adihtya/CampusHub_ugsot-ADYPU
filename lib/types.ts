@@ -65,6 +65,57 @@ export interface Highlight {
 
 export type PostTag = 'Need help' | 'Ask' | 'Find teammate' | 'Showcase';
 
+export const FORUM_TAGS = [
+  'Python',
+  'JavaScript',
+  'Java',
+  'C/C++',
+  'Web',
+  'AI/ML',
+  'DSA',
+  'Git',
+  'Other',
+] as const;
+
+export type ForumTag = (typeof FORUM_TAGS)[number];
+export type ForumPostType = 'question' | 'discussion' | 'announcement';
+
+export type ForumPost = {
+  id: string;
+  type: ForumPostType;
+  title: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  authorEmail: string;
+  tags: string[];
+  acceptedAnswerId: string | null;
+  isReported: boolean;
+  createdAt: string;
+  updatedAt: string;
+  upvotesCount: number;
+  answersCount: number;
+  hasUpvoted: boolean;
+  canDelete: boolean;
+};
+
+export type ForumAnswer = {
+  id: string;
+  postId: string;
+  authorId: string;
+  authorName: string;
+  authorEmail: string;
+  content: string;
+  isAccepted: boolean;
+  isReported: boolean;
+  createdAt: string;
+  updatedAt: string;
+  upvotesCount: number;
+  hasUpvoted: boolean;
+  canDelete: boolean;
+  canAccept: boolean;
+};
+
 export interface Post {
   id: string;
   tag: PostTag;

@@ -130,6 +130,92 @@ export type Database = {
         Update: Partial<Database['public']['Tables']['event_certificates']['Insert']>;
         Relationships: [];
       };
+      forum_posts: {
+        Row: {
+          id: string;
+          type: 'question' | 'discussion' | 'announcement';
+          title: string;
+          content: string;
+          author_id: string;
+          tags: string[];
+          accepted_answer_id: string | null;
+          is_reported: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          type: 'question' | 'discussion' | 'announcement';
+          title: string;
+          content: string;
+          author_id: string;
+          tags?: string[];
+          accepted_answer_id?: string | null;
+          is_reported?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['forum_posts']['Insert']>;
+        Relationships: [];
+      };
+      forum_answers: {
+        Row: {
+          id: string;
+          post_id: string;
+          author_id: string;
+          content: string;
+          is_reported: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          post_id: string;
+          author_id: string;
+          content: string;
+          is_reported?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['forum_answers']['Insert']>;
+        Relationships: [];
+      };
+      forum_upvotes: {
+        Row: {
+          user_id: string;
+          item_type: 'post' | 'answer';
+          item_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          item_type: 'post' | 'answer';
+          item_id: string;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['forum_upvotes']['Insert']>;
+        Relationships: [];
+      };
+      forum_reports: {
+        Row: {
+          id: string;
+          reporter_id: string;
+          item_type: 'post' | 'answer';
+          item_id: string;
+          reason: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          reporter_id: string;
+          item_type: 'post' | 'answer';
+          item_id: string;
+          reason?: string;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['forum_reports']['Insert']>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
